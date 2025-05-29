@@ -1,16 +1,60 @@
-cmake_minimum_required(VERSION 3.16)
-project(AlloLib-AmbisonicsToiBnaural)
+cmake_minimum_required(VERSION 3.22)
+project(AlloLib-AmbisonicsToBinaural)
 set(APP_NAME AmbisonicsToiBnaural)
 
 # cmake scripts are kept in the cmake directory
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
+# Set C++ standard (matching your working project)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 # set compiler/platform specific flags
 if(MSVC)
   set(CMAKE_BUILD_PARALLEL_LEVEL $ENV{NUMBER_OF_PROCESSORS})
-  # add_compile_options(/utf-8)
-  # set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /STACK:4194304")
 endif()
+
+# ========================
+# JUCE Setup - Using Working Approach from Your Successful Project
+# ========================
+
+# Add JUCE as subdirectory (this is the key - no FetchContent, no building from source)
+add_subdirectory(JUCE)
+
+# Create a static library for JUCE convolution functionality
+# This approach avoids the plugin system but uses JUCE's build system properly
+add_library(juce_convolution_lib STATIC
+    # Empty - we'll link the JUCE modules we need
+)
+
+# Link only the JUCE modules we need (avoiding GUI modules that cause issues)
+target_link_libraries(juce_convolution_lib
+    PUBLIC
+        juce::juce_core
+        juce::juce_audio_basics
+        juce::juce_dsp
+        juce::juce_recommended_config_flags
+)
+
+# Set compile definitions for JUCE (matching your working project)
+target_compile_definitions(juce_convolution_lib
+    PUBLIC
+        JUCE_WEB_BROWSER=0
+        JUCE_USE_CURL=0
+        JUCE_STANDALONE_APPLICATION=1
+        JUCE_DISABLE_JUCE_VERSION_PRINTING=1
+        # Disable GUI modules that cause macOS 15.1 issues
+        JUCE_MODULE_AVAILABLE_juce_gui_basics=0
+        JUCE_MODULE_AVAILABLE_juce_gui_extra=0
+        JUCE_MODULE_AVAILABLE_juce_opengl=0
+        JUCE_MODULE_AVAILABLE_juce_graphics=0
+        JUCE_MODULE_AVAILABLE_juce_events=0
+)
+
+# ========================
+# Your Original Application Setup
+# ========================
 
 # add source files to executable
 add_executable(${APP_NAME} main.cpp)
@@ -20,7 +64,6 @@ add_subdirectory(allolib)
 target_link_libraries(${APP_NAME} PRIVATE al)
 
 # Add and configure Spatial Audio Framework
-# Enable SOFA reader module which includes libmysofa
 set(SAF_PERFORMANCE_LIB SAF_USE_APPLE_ACCELERATE CACHE STRING "Performance library to use")
 set(SAF_ENABLE_SOFA_READER_MODULE 1 CACHE BOOL "Enable SOFA reader module")
 set(SAF_BUILD_EXAMPLES 0 CACHE BOOL "Don't build SAF examples")
@@ -32,13 +75,19 @@ add_subdirectory(Spatial_Audio_Framework)
 target_link_libraries(${APP_NAME} PRIVATE saf)
 
 # Include SAF headers
-target_include_directories(${APP_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/Spatial_Audio_Framework/framework/include)
-target_include_directories(${APP_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/Spatial_Audio_Framework/framework/modules/saf_hrir)
-target_include_directories(${APP_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/Spatial_Audio_Framework/framework/modules/saf_hoa)
-target_include_directories(${APP_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/Spatial_Audio_Framework/framework/modules/saf_vbap)
-target_include_directories(${APP_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/Spatial_Audio_Framework/framework/modules/saf_utilities)
-target_include_directories(${APP_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/Spatial_Audio_Framework/framework/modules/saf_sofa_reader)
-target_include_directories(${APP_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/include)
+target_include_directories(${APP_NAME} PRIVATE 
+    ${CMAKE_CURRENT_LIST_DIR}/Spatial_Audio_Framework/framework/include
+    ${CMAKE_CURRENT_LIST_DIR}/Spatial_Audio_Framework/framework/modules/saf_hrir
+    ${CMAKE_CURRENT_LIST_DIR}/Spatial_Audio_Framework/framework/modules/saf_hoa
+    ${CMAKE_CURRENT_LIST_DIR}/Spatial_Audio_Framework/framework/modules/saf_vbap
+    ${CMAKE_CURRENT_LIST_DIR}/Spatial_Audio_Framework/framework/modules/saf_utilities
+    ${CMAKE_CURRENT_LIST_DIR}/Spatial_Audio_Framework/framework/modules/saf_sofa_reader
+    ${CMAKE_CURRENT_LIST_DIR}/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/include
+    ${CMAKE_CURRENT_LIST_DIR}/al_ext/assets3d
+)
+
+# Link our JUCE convolution library (using the working approach)
+target_link_libraries(${APP_NAME} PRIVATE juce_convolution_lib)
 
 # add al_ext to project & link if it exists
 if (EXISTS ${CMAKE_CURRENT_LIST_DIR}/al_ext)
@@ -47,10 +96,17 @@ if (EXISTS ${CMAKE_CURRENT_LIST_DIR}/al_ext)
   target_link_libraries(${APP_NAME} PRIVATE ${AL_EXT_LIBRARIES})
 endif()
 
-# Platform-specific settings
+target_link_libraries(${APP_NAME} PRIVATE al_assets3d)
+
+
+# Platform-specific settings for your application
 if(APPLE)
   # MacOS specific settings
-  target_link_libraries(${APP_NAME} PRIVATE "-framework CoreAudio" "-framework CoreMIDI" "-framework CoreFoundation")
+  target_link_libraries(${APP_NAME} PRIVATE 
+    "-framework CoreAudio" 
+    "-framework CoreMIDI" 
+    "-framework CoreFoundation"
+  )
 elseif(UNIX AND NOT APPLE)
   # Linux specific settings
   find_package(ALSA QUIET)
@@ -67,17 +123,15 @@ elseif(WIN32)
   target_link_libraries(${APP_NAME} PRIVATE winmm)
 endif()
 
-# Suppress warnings for now
+# Suppress warnings
 target_compile_options(${APP_NAME} PRIVATE -w)
 
 # binaries are put into the ./bin directory by default
 set_target_properties(${APP_NAME} PROPERTIES
-  CXX_STANDARD 14
+  CXX_STANDARD 20
   CXX_STANDARD_REQUIRED ON
   CXX_EXTENSIONS OFF
   RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin
   RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_CURRENT_LIST_DIR}/debug
   RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_CURRENT_LIST_DIR}/bin
-  # ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/lib
-  # LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin
 )
