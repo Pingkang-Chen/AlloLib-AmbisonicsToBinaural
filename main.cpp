@@ -1350,8 +1350,8 @@ for (int i = 0; i < virtualSpeakerPositions.size(); i++) {
     // Custom ImGui controls
     ImGui::Begin("Source Controls");
     
-    // T-design layout dropdown
-    if (ImGui::Combo("T-design Layout", &currentTDesign, tdesignOptions, 5)) {
+    // Speaker Layouts dropdown
+    if (ImGui::Combo("Speaker Layouts", &currentTDesign, tdesignOptions, 5)) {
         int newOrder = tdesignOrders[currentTDesign];
         updateAmbisonicOrderSafely(newOrder);
     }
