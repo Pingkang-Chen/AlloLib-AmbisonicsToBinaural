@@ -15,6 +15,8 @@
 #include "saf_vbap.h"
 #include "saf_utilities.h"
 
+#include "al_ext/assets3d/al_Asset.hpp"
+
 // JUCE includes - ONLY the modules we need, no GUI components
 #include "juce_core/juce_core.h"
 #include "juce_audio_basics/juce_audio_basics.h"
@@ -686,6 +688,10 @@ struct MyApp : public App {
    DynamicScene scene;
    PickableManager pickableManager;
    ControlGUI gui;
+
+   Scene* headScene = nullptr;
+   std::vector<Mesh> headMeshes;
+   Vec3f headSceneMin, headSceneMax, headSceneCenter;
    
    Parameter azimuthParam{"Azimuth", "", 0.0, "", -180.0, 180.0};
    Parameter elevationParam{"Elevation", "", 30.0, "", -90.0, 90.0};
@@ -702,6 +708,10 @@ struct MyApp : public App {
    VAOMesh sphereMesh;
    VAOMesh coneMesh;  // Added for virtual speaker cones
    std::vector<Vec3f> virtualSpeakerPositions;  // Added for cone positions
+
+   Scene* speakerScene = nullptr;
+   std::vector<Mesh> speakerMeshes;
+   Vec3f speakerSceneMin, speakerSceneMax, speakerSceneCenter;
    
    SineAgent* sineAgent = nullptr;
    bool pickablesUpdatingParameters = false;
@@ -727,6 +737,31 @@ struct MyApp : public App {
        auto duration = now.time_since_epoch();
        return std::chrono::duration<double>(duration).count();
    }
+
+   void loadHeadModel() {
+    std::string fileName = "../models/head.obj";
+    
+    headScene = Scene::import(fileName);
+    if (!headScene) {
+        std::cout << "Error: Could not load head model from " << fileName << std::endl;
+        std::cout << "Make sure the head.obj file exists at the specified path." << std::endl;
+        return;
+    }
+    
+    // Get bounding box of the model
+    headScene->getBounds(headSceneMin, headSceneMax);
+    headSceneCenter = (headSceneMin + headSceneMax) / 2.0f;
+    
+    // Load all meshes from the scene
+    headMeshes.resize(headScene->meshes());
+    for (int i = 0; i < headScene->meshes(); i++) {
+        headScene->mesh(i, headMeshes[i]);
+    }
+    
+    std::cout << "Successfully loaded head model with " << headMeshes.size() << " meshes" << std::endl;
+    std::cout << "Head bounds: min(" << headSceneMin.x << "," << headSceneMin.y << "," << headSceneMin.z 
+              << ") max(" << headSceneMax.x << "," << headSceneMax.y << "," << headSceneMax.z << ")" << std::endl;
+}
 
    // Create smaller cone mesh with apex pointing toward origin
    void createCone(Mesh& mesh, float baseRadius, float height, int numSegments = 8) {
@@ -779,6 +814,32 @@ struct MyApp : public App {
            mesh.normal(baseNormal);
        }
    }
+
+   void loadSpeakerModel() {
+    std::string fileName = "../models/speaker.obj";
+    
+    speakerScene = Scene::import(fileName);
+    if (!speakerScene) {
+        std::cout << "Error: Could not load speaker model from " << fileName << std::endl;
+        std::cout << "Make sure the speaker.obj file exists at the specified path." << std::endl;
+        std::cout << "Falling back to cone visualization." << std::endl;
+        return;
+    }
+    
+    // Get bounding box of the speaker model
+    speakerScene->getBounds(speakerSceneMin, speakerSceneMax);
+    speakerSceneCenter = (speakerSceneMin + speakerSceneMax) / 2.0f;
+    
+    // Load all meshes from the scene
+    speakerMeshes.resize(speakerScene->meshes());
+    for (int i = 0; i < speakerScene->meshes(); i++) {
+        speakerScene->mesh(i, speakerMeshes[i]);
+    }
+    
+    std::cout << "Successfully loaded speaker model with " << speakerMeshes.size() << " meshes" << std::endl;
+    std::cout << "Speaker bounds: min(" << speakerSceneMin.x << "," << speakerSceneMin.y << "," << speakerSceneMin.z 
+              << ") max(" << speakerSceneMax.x << "," << speakerSceneMax.y << "," << speakerSceneMax.z << ")" << std::endl;
+}
 
    void createWireframeSphere(Mesh& mesh, float radius, int numLongitudes = 12, int numLatitudes = 8) {
        mesh.reset();
@@ -945,9 +1006,12 @@ struct MyApp : public App {
        // Create smaller cone mesh for virtual speakers
        createCone(coneMesh, 0.12f, 0.35f, 8);  // Smaller: baseRadius=0.12f, height=0.35f, 8 segments
        coneMesh.update();
-       
+
        // Setup virtual speaker positions using T-design coordinates
        setupVirtualSpeakerPositions();
+
+       loadHeadModel();
+       loadSpeakerModel();
        
        imguiInit();
        
@@ -1110,136 +1174,222 @@ void updateAmbisonicOrderSafely(int newOrder) {
        }
    }
 
-   void onDraw(Graphics &g) override {
-       g.clear(0);
-       gl::depthTesting(true);
-       
-       // Draw coordinate reference axes
-       g.lineWidth(2.0);
-       Mesh axes;
-       axes.primitive(Mesh::LINES);
-       
-       // X axis (red)
-       g.color(1, 0, 0);
-       axes.vertex(0, 0, 0);
-       axes.vertex(1, 0, 0);
-       
-       // Y axis (green)
-       g.color(0, 1, 0);
-       axes.vertex(0, 0, 0);
-       axes.vertex(0, 1, 0);
-       
-       // Z axis (blue)
-       g.color(0, 0, 1);
-       axes.vertex(0, 0, 0);
-       axes.vertex(0, 0, 1);
-       
-       g.draw(axes);
-       
-       // Draw reference sphere
-       g.color(0.3, 0.3, 0.3, 0.4);
-       g.polygonMode(GL_LINE);
-       g.draw(sphereMesh);
-       
-       // Draw virtual speaker cones at T-design positions
-       g.polygonMode(GL_FILL);
-       for (int i = 0; i < virtualSpeakerPositions.size(); i++) {
-           Vec3f speakerPos = virtualSpeakerPositions[i];
-           
-           g.pushMatrix();
-           
-           // Move to speaker position
-           g.translate(speakerPos);
-           
-           // Point the cone toward the origin using lookAt
-           Vec3f eye = speakerPos;
-           Vec3f center = Vec3f(0, 0, 0);  // Origin
-           Vec3f up = Vec3f(0, 1, 0);
-           
-           // Calculate forward, right, and up vectors
-           Vec3f forward = (center - eye).normalize();
-           Vec3f right = cross(forward, up).normalize();
-           up = cross(right, forward).normalize();
-           
-           // Create and apply the transformation matrix
-           float matrix[16] = {
-               right.x,   right.y,   right.z,   0,
-               up.x,      up.y,      up.z,      0,
-               -forward.x, -forward.y, -forward.z, 0,
-               0,         0,         0,         1
-           };
-           
-           g.multModelMatrix(Matrix4f(matrix));
-           
-           // Color all cones the same (orange)
-           g.color(1.0, 0.6, 0.2, 0.8);  // Orange color for all cones
-           
-           g.draw(coneMesh);
-           g.popMatrix();
-       }
-       
-       // Draw sound source
-       if (pickable) {
-           // Simple green color for the sound source
-           g.color(0.2, 0.8, 0.4);
-           g.polygonMode(GL_FILL);
-           
-           pickable->draw(g, [&](Pickable &p) {
-               auto &b = dynamic_cast<PickableBB &>(p);
-               b.drawMesh(g);
-           });
-           // Get spherical coordinates for visualization helpers
-           float az, el, radius;
-           cartesianToSpherical(pickable->pose.get().pos(), az, el, radius);
-       }
-       
-       // Draw GUI
-       imguiBeginFrame();
-       gui.draw(g);
-       
-       // Custom ImGui controls
-       ImGui::Begin("Source Controls");
-       
-       // T-design layout dropdown
-       if (ImGui::Combo("Speaker Layout", &currentTDesign, tdesignOptions, 5)) {
-           int newOrder = tdesignOrders[currentTDesign];
-           updateAmbisonicOrderSafely(newOrder);
-       }
-       
-       float azValue = azimuthParam.get();
-       if (ImGui::SliderFloat("Azimuth", &azValue, -180.0f, 180.0f)) {
-           azimuthParam.set(azValue);
-           updateSourcePosition();
-       }
-       
-       float elValue = elevationParam.get();
-       if (ImGui::SliderFloat("Elevation", &elValue, -90.0f, 90.0f)) {
-           elevationParam.set(elValue);
-           updateSourcePosition();
-       }
-       
-       float gainValue = gainParam.get();
-       if (ImGui::SliderFloat("Gain", &gainValue, 0.0f, 2.0f)) {
-           gainParam.set(gainValue);
-           updateSourcePosition();
-       }
-       
-       float freqValue = freqParam.get();
-       if (ImGui::SliderFloat("Frequency", &freqValue, 20.0f, 2000.0f)) {
-           freqParam.set(freqValue);
-           updateSourcePosition();
-       }
-       
-       // Display current T-design info
-       ImGui::Separator();
-       ImGui::Text("Current Layout: %s", tdesignOptions[currentTDesign]);
-       ImGui::Text("Virtual Speakers: %d", tdesignCounts[currentTDesign]);
-       ImGui::Text("Ambisonic Order: %d", tdesignOrders[currentTDesign]);
-       
-       ImGui::End();
-       imguiEndFrame();
-       imguiDraw();
-   }
+void onDraw(Graphics &g) override {
+    g.clear(0);
+    gl::depthTesting(true);
+    
+    // Draw coordinate reference axes
+    g.lineWidth(2.0);
+    Mesh axes;
+    axes.primitive(Mesh::LINES);
+    
+    // X axis (red)
+    g.color(1, 0, 0);
+    axes.vertex(0, 0, 0);
+    axes.vertex(1, 0, 0);
+    
+    // Y axis (green)
+    g.color(0, 1, 0);
+    axes.vertex(0, 0, 0);
+    axes.vertex(0, 1, 0);
+    
+    // Z axis (blue)
+    g.color(0, 0, 1);
+    axes.vertex(0, 0, 0);
+    axes.vertex(0, 0, 1);
+    
+    g.draw(axes);
+    
+    // Draw the head model FIRST (behind everything else)
+    if (headScene && !headMeshes.empty()) {
+        g.pushMatrix();
+        
+        // Position at origin (center of sphere)
+        g.translate(0, 0, 0);
+        
+        // ROTATE 180 degrees around Y-axis to show back of head
+        g.rotate(180, 0, 1, 0);
+        
+        // Calculate scale to make head appropriately sized relative to the sphere
+        float headScale = 0.5f;  // Adjust this value to make head bigger/smaller
+        
+        // Optional: Auto-scale based on head's bounding box
+        float maxDimension = std::max({
+            headSceneMax.x - headSceneMin.x,
+            headSceneMax.y - headSceneMin.y, 
+            headSceneMax.z - headSceneMin.z
+        });
+        if (maxDimension > 0) {
+            headScale = 1.5f / maxDimension;  // Scale to reasonable size
+        }
+        
+        g.scale(headScale);
+        
+        // Center the head model at origin
+        g.translate(-headSceneCenter);
+        
+        // Set color for the head (skin tone or neutral)
+        g.color(0.3, 0.25, 0.2, 1.0); // Light skin tone
+        
+        // Enable lighting for realistic 3D appearance
+        g.lighting(true);
+        
+        // Draw all head meshes
+        for (const auto& mesh : headMeshes) {
+            g.draw(mesh);
+        }
+        
+        g.popMatrix();
+    }
+    
+    // DISABLE DEPTH WRITING for transparent objects (sphere wireframe)
+    g.depthMask(false);
+    
+    // Draw reference sphere with enhanced visibility
+    g.color(1.0, 1.0, 1.0, 1.0);  // Brighter and more opaque
+    g.lineWidth(2.5);  // Slightly thicker lines
+    g.polygonMode(GL_LINE);
+    g.draw(sphereMesh);
+    
+    // RE-ENABLE DEPTH WRITING for solid objects
+    g.depthMask(true);
+    
+// Draw virtual speakers (Genelec models or fallback cones) at T-design positions
+// Draw virtual speakers (Genelec models or fallback cones) at T-design positions
+g.polygonMode(GL_FILL);
+for (int i = 0; i < virtualSpeakerPositions.size(); i++) {
+    Vec3f speakerPos = virtualSpeakerPositions[i];
+    
+    g.pushMatrix();
+    
+    // Move to speaker position
+    g.translate(speakerPos);
+    
+    // Point the speaker toward the origin using lookAt
+    Vec3f eye = speakerPos;
+    Vec3f center = Vec3f(0, 0, 0);  // Origin
+    Vec3f up = Vec3f(0, 1, 0);
+    
+    // Calculate forward, right, and up vectors
+    Vec3f forward = (center - eye).normalize();
+    Vec3f right = cross(forward, up).normalize();
+    up = cross(right, forward).normalize();
+    
+    // Create and apply the transformation matrix
+    float matrix[16] = {
+        right.x,   right.y,   right.z,   0,
+        up.x,      up.y,      up.z,      0,
+        -forward.x, -forward.y, -forward.z, 0,
+        0,         0,         0,         1
+    };
+    
+    g.multModelMatrix(Matrix4f(matrix));
+    
+    // Rotate the speaker to face the origin
+    g.rotate(270, 0, 1, 0);
+    g.rotate(90, 1, 0, 0);
+
+    // Draw Genelec speaker model if loaded, otherwise fallback to cone
+    if (speakerScene && !speakerMeshes.empty()) {
+        // Scale the speaker to appropriate size (similar to cone size)
+        float speakerScale = 0.15f;  // Adjust this to match cone size
+        
+        // Optional: Auto-scale based on speaker's bounding box
+        float maxDimension = std::max({
+            speakerSceneMax.x - speakerSceneMin.x,
+            speakerSceneMax.y - speakerSceneMin.y, 
+            speakerSceneMax.z - speakerSceneMin.z
+        });
+        if (maxDimension > 0) {
+            speakerScale = 0.4f / maxDimension;  // Scale to reasonable size
+        }
+        
+        g.scale(speakerScale);
+        
+        // Center the speaker model
+        g.translate(-speakerSceneCenter);
+        
+        // Set color for the speakers (white/gray for professional look)
+        g.color(0.9, 0.9, 0.9, 1.0);  // Light gray
+        
+        // Enable lighting for realistic 3D appearance
+        g.lighting(true);
+        
+        // Draw all speaker meshes
+        for (const auto& mesh : speakerMeshes) {
+            g.draw(mesh);
+        }
+    } else {
+        // Fallback to original cone if speaker model failed to load
+        g.color(1.0, 0.6, 0.2, 0.8);  // Orange color for fallback cones
+        g.draw(coneMesh);
+    }
+    
+    g.popMatrix();
+}
+    
+    // Draw sound source
+    if (pickable) {
+        // Simple green color for the sound source
+        g.color(0.2, 0.8, 0.4);
+        g.polygonMode(GL_FILL);
+        
+        pickable->draw(g, [&](Pickable &p) {
+            auto &b = dynamic_cast<PickableBB &>(p);
+            b.drawMesh(g);
+        });
+        // Get spherical coordinates for visualization helpers
+        float az, el, radius;
+        cartesianToSpherical(pickable->pose.get().pos(), az, el, radius);
+    }
+    
+    // Draw GUI
+    imguiBeginFrame();
+    gui.draw(g);
+    
+    // Custom ImGui controls
+    ImGui::Begin("Source Controls");
+    
+    // T-design layout dropdown
+    if (ImGui::Combo("T-design Layout", &currentTDesign, tdesignOptions, 5)) {
+        int newOrder = tdesignOrders[currentTDesign];
+        updateAmbisonicOrderSafely(newOrder);
+    }
+    
+    float azValue = azimuthParam.get();
+    if (ImGui::SliderFloat("Azimuth", &azValue, -180.0f, 180.0f)) {
+        azimuthParam.set(azValue);
+        updateSourcePosition();
+    }
+    
+    float elValue = elevationParam.get();
+    if (ImGui::SliderFloat("Elevation", &elValue, -90.0f, 90.0f)) {
+        elevationParam.set(elValue);
+        updateSourcePosition();
+    }
+    
+    float gainValue = gainParam.get();
+    if (ImGui::SliderFloat("Gain", &gainValue, 0.0f, 2.0f)) {
+        gainParam.set(gainValue);
+        updateSourcePosition();
+    }
+    
+    float freqValue = freqParam.get();
+    if (ImGui::SliderFloat("Frequency", &freqValue, 20.0f, 2000.0f)) {
+        freqParam.set(freqValue);
+        updateSourcePosition();
+    }
+    
+    // Display current T-design info
+    ImGui::Separator();
+    ImGui::Text("Current Layout: %s", tdesignOptions[currentTDesign]);
+    ImGui::Text("Virtual Speakers: %d", tdesignCounts[currentTDesign]);
+    ImGui::Text("Ambisonic Order: %d", tdesignOrders[currentTDesign]);
+    
+    ImGui::End();
+    imguiEndFrame();
+    imguiDraw();
+}
 
    void onSound(AudioIOData &io) override {
        Pose& listenerPose = scene.listenerPose();
