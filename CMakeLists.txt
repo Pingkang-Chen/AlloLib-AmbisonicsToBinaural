@@ -34,6 +34,7 @@ target_link_libraries(juce_convolution_lib
         juce::juce_core
         juce::juce_audio_basics
         juce::juce_dsp
+        juce::juce_audio_formats
         juce::juce_recommended_config_flags
 )
 
@@ -53,11 +54,18 @@ target_compile_definitions(juce_convolution_lib
 )
 
 # ========================
-# Your Original Application Setup
+# Header-Only Structure with Ambisonic Reverb Support
 # ========================
 
-# add source files to executable
-add_executable(${APP_NAME} main.cpp)
+# Main source file (contains most of the code)
+add_executable(${APP_NAME} src/main.cpp)
+
+# Include directories for our header-only modules including new reverb processor
+target_include_directories(${APP_NAME} PRIVATE
+    src
+    src/audio
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/audio
+)
 
 # add allolib to project & link
 add_subdirectory(allolib)
@@ -97,7 +105,6 @@ if (EXISTS ${CMAKE_CURRENT_LIST_DIR}/al_ext)
 endif()
 
 target_link_libraries(${APP_NAME} PRIVATE al_assets3d)
-
 
 # Platform-specific settings for your application
 if(APPLE)
