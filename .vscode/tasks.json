@@ -1,18 +1,21 @@
 {
-  "version": "2.0.0",
-  "tasks": [
-    {
-      "label": "Run Script",
-      "type": "shell",
-      "command": "./run.sh",
-      "args": [
-        "${file}"
-      ],
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
-      "problemMatcher": []
-    }
-  ]
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build and Run",
+            "type": "shell",
+            "command": "cd build && make -j$(sysctl -n hw.ncpu) && cd ../bin && ./AmbisonicsToBinaural",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        }
+    ]
 }

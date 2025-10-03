@@ -77,6 +77,7 @@ private:
             case 24: return static_cast<int>(sampleRate * 3.0);   // 3 seconds for T24
             case 36: return static_cast<int>(sampleRate * 1.0);   // 1 second for T36
             case 48: return static_cast<int>(sampleRate * 0.5);   // 0.5 seconds for T48
+            case 54: return static_cast<int>(sampleRate * 0.4);   // 0.4 seconds for Allosphere
             default: return static_cast<int>(sampleRate * 1.0);
         }
     }
@@ -90,6 +91,7 @@ private:
             case SpeakerLayout::T24: baseGain = 0.3f;    break;
             case SpeakerLayout::T36: baseGain = 0.15f;   break;
             case SpeakerLayout::T48: baseGain = 0.1f;    break;
+            case SpeakerLayout::ALLOSPHERE: baseGain = 0.09f; break;
             default: baseGain = 1.0f;
         }
         
@@ -110,6 +112,7 @@ private:
             case SpeakerLayout::T24: return 3.3f;     // Compensate for 0.3x energy reduction
             case SpeakerLayout::T36: return 6.7f;     // Compensate for 0.15x energy reduction
             case SpeakerLayout::T48: return 10.0f;    // Compensate for 0.1x energy reduction
+            case SpeakerLayout::ALLOSPHERE: return 11.0f;
             default: return 1.0f;
         }
     }

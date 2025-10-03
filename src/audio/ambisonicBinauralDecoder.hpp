@@ -84,6 +84,7 @@ float getVirtualSpeakerGain() const {
         case 24: volumeNormalization = 3.5f;   break;
         case 36: volumeNormalization = 5.0f;   break;
         case 48: volumeNormalization = 7.0f;   break;
+        case 54: volumeNormalization = 7.5f;   break;
         default: volumeNormalization = 1.0f;   break;
     }
     

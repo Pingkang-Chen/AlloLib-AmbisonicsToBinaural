@@ -26,7 +26,7 @@
 // Asset loading
 #include "al_ext/assets3d/al_Asset.hpp"
 
-// JUCE includes - ONLY the modules we need, no GUI components
+// JUCE includes
 #include "juce_core/juce_core.h"
 #include "juce_audio_basics/juce_audio_basics.h"
 #include "juce_dsp/juce_dsp.h"
@@ -41,7 +41,7 @@
 using namespace al;
 
 // ===================
-// Simplified Parameter Smoother - Only for Audio Parameters
+// Simplified Parameter Smoother
 // ===================
 class ParameterSmoother {
 private:
@@ -89,13 +89,10 @@ public:
     }
 };
 
-
-// Helper: Convert Spherical to Cartesian
 Vec3f sphericalToCartesian(float azimuthDeg, float elevationDeg, float radius) {
     float azimuth_rad = azimuthDeg * M_PI / 180.0f;
     float elevation_rad = elevationDeg * M_PI / 180.0f;
     
-    // Visual positioning: 0° = front of head, positive = right side
     float x = radius * cos(elevation_rad) * sin(azimuth_rad);
     float y = radius * sin(elevation_rad);
     float z = radius * cos(elevation_rad) * (-cos(azimuth_rad));
@@ -117,17 +114,14 @@ void cartesianToSpherical(const Vec3f& cartesian, float& azimuthDeg, float& elev
     }
     
     elevationDeg = asin(y / radius) * 180.0f / M_PI;
-    
-    // Don't negate here - keep the visual azimuth as-is
     azimuthDeg = atan2(x, -z) * 180.0f / M_PI;
     
-    // Normalize to [-180, +180] range
     while (azimuthDeg > 180.0f) azimuthDeg -= 360.0f;
     while (azimuthDeg < -180.0f) azimuthDeg += 360.0f;
 }
 
 // ===================
-// Audio Source Class - FIXED for Resume Functionality
+// Audio Source Class
 // ===================
 class AudioSource {
 public:
@@ -138,7 +132,6 @@ public:
     float elevation = 0.0f;
     float gain = 1.0f;
     
-    // Audio data
     juce::AudioBuffer<float> audioBuffer;
     int currentSamplePosition = 0;
     bool isLooping = true;
@@ -146,16 +139,14 @@ public:
     bool isMuted = false;
     bool isSoloed = false;
     
-    // ONLY gain smoothing - no position smoothing for responsiveness
     ParameterSmoother gainSmoother;
     
-    // Visual properties
     Color color;
     bool isSelected = false;
     
     AudioSource(int id, const std::string& file, float sampleRate) 
         : sourceId(id), filename(file),
-          gainSmoother(1.0f, 15.0f, sampleRate) {  // Shorter smoothing for responsiveness
+          gainSmoother(1.0f, 15.0f, sampleRate) {
         
         generateUniqueColor();
         setPosition(al::rnd::uniform(-180.0f, 180.0f), al::rnd::uniform(-45.0f, 45.0f));
@@ -168,7 +159,6 @@ public:
         float saturation = 0.7f + 0.3f * (sourceId % 3) / 3.0f;
         float value = 0.8f + 0.2f * ((sourceId + 1) % 2);
 
-        // HSV to RGB conversion
         float r, g, b;
         float h = hue * 360.0f;
         int i = int(h / 60.0f) % 6;
@@ -264,15 +254,14 @@ public:
     }
     
     void setPosition(float azimuthDeg, float elevationDeg) {
-        // IMMEDIATE position update - no smoothing for real-time response
         azimuth = azimuthDeg;
         elevation = elevationDeg;
         position = sphericalToCartesian(azimuthDeg, elevationDeg, 1.0f);
     }
 
     void setGain(float newGain) {
-        gain = newGain;  // Set immediately for UI responsiveness
-        gainSmoother.setTarget(newGain);  // But smooth the audio to prevent clicks
+        gain = newGain;
+        gainSmoother.setTarget(newGain);
     }
 
     float getNextSample() {
@@ -281,11 +270,10 @@ public:
         }
         
         float sample = audioBuffer.getSample(0, currentSamplePosition);
-        sample *= gainSmoother.getNextValue();  // Apply smoothed gain
+        sample *= gainSmoother.getNextValue();
         
         currentSamplePosition++;
         if (currentSamplePosition >= audioBuffer.getNumSamples()) {
-            // Individual files don't loop anymore - they just stop
             isActive = false;
             return 0.0f;
         }
@@ -296,7 +284,6 @@ public:
     void reset() {
         currentSamplePosition = 0;
         isActive = true;
-        // CRITICAL FIX: Don't reset gain to zero! Keep current gain value for resume
         gainSmoother.reset(gain);
     }
 
@@ -310,7 +297,7 @@ public:
 };
 
 // ===================
-// Multi-Source Audio Manager - FIXED State Management
+// Multi-Source Audio Manager
 // ===================
 class MultiSourceManager {
 private:
@@ -318,10 +305,10 @@ private:
     int nextSourceId = 0;
     double sampleRate;
     
-public:  // Make these public so onSound can access them directly
+public:
     bool isPlaying = false;
     bool isPaused = false;
-    bool sessionLooping = true;  // Default to true for continuous playback
+    bool sessionLooping = true;
     
     MultiSourceManager(double sr) : sampleRate(sr) {}
     
@@ -373,7 +360,6 @@ public:  // Make these public so onSound can access them directly
         isPlaying = true;
         isPaused = false;
         
-        // Make sure all sources are active when resuming
         for (auto& source : sources) {
             if (!source->isActive && source->audioBuffer.getNumSamples() > 0) {
                 source->isActive = true;
@@ -385,18 +371,15 @@ public:  // Make these public so onSound can access them directly
     
     void pause() {
         isPaused = true;
-        // Don't reset gain smoothers to zero - just pause the state!
         std::cout << "Paused playback" << std::endl;
     }
     
     void stop() {
         isPlaying = false;
         isPaused = false;
-        // Reset playback positions but preserve gain settings
         for (auto& source : sources) {
-            source->currentSamplePosition = 0;  // Reset playback position
-            source->isActive = true;             // Reactivate source
-            // Keep gain settings intact for proper resume
+            source->currentSamplePosition = 0;
+            source->isActive = true;
         }
         std::cout << "Stopped playback" << std::endl;
     }
@@ -442,7 +425,6 @@ public:  // Make these public so onSound can access them directly
     void checkAndRestartSession() {
         if (!sessionLooping) return;
         
-        // Check if all sources have finished
         bool allFinished = true;
         for (auto& source : sources) {
             if (source->isActive && source->audioBuffer.getNumSamples() > 0) {
@@ -451,7 +433,6 @@ public:  // Make these public so onSound can access them directly
             }
         }
         
-        // If all finished and session looping is on, restart all
         if (allFinished && isPlaying && !isPaused) {
             for (auto& source : sources) {
                 source->reset();
@@ -471,7 +452,6 @@ public:  // Make these public so onSound can access them directly
         for (auto& source : sources) {
             if (!source->isActive || source->audioBuffer.getNumSamples() == 0) continue;
             
-            // Skip if muted, or if other sources are soloed and this one isn't
             if (source->isMuted || (anySoloed && !source->isSoloed)) continue;
             
             activeSources++;
@@ -552,7 +532,6 @@ struct MyApp : public App {
     std::vector<std::unique_ptr<SelectablePickable>> sourcePickables;
 
     std::unique_ptr<AmbisonicReverbProcessor> reverbProcessor;
-
     
     int selectedSourceId = -1;
     bool pickablesUpdatingParameters = false;
@@ -567,9 +546,13 @@ struct MyApp : public App {
     int bufferSize = 0;
     
     juce::AudioFormatManager audioFormatManager;
+
+    std::unique_ptr<juce::dsp::Convolution> headphoneEQ_L;
+    std::unique_ptr<juce::dsp::Convolution> headphoneEQ_R;
+    int currentHeadphoneEQIndex = 0;
     
     double lastParameterUpdateTime = 0.0;
-    const double parameterUpdateInterval = 0.005;  // Faster updates - 5ms
+    const double parameterUpdateInterval = 0.005;
     
     double getCurrentTime() {
         auto now = std::chrono::steady_clock::now();
@@ -578,14 +561,13 @@ struct MyApp : public App {
     }
 
     void enforceSourceLimit() {
-        const int MAX_SOURCES = 20; // Reasonable limit
+        const int MAX_SOURCES = 20;
         
         if (sourceManager->getSourceCount() > MAX_SOURCES) {
             std::cout << "Warning: Too many sources loaded (" << sourceManager->getSourceCount() 
                       << "). Performance may be affected. Consider using fewer sources." << std::endl;
         }
     }
-
 
     void loadHeadModel() {
         std::string fileName = "../assets/models/head.obj";
@@ -707,7 +689,6 @@ struct MyApp : public App {
         if (!filepaths.empty()) {
             std::cout << "Loading " << filepaths.size() << " files..." << std::endl;
             
-            // Load files one by one with progress feedback
             int loadedCount = 0;
             for (const auto& path : filepaths) {
                 int sourceId = sourceManager->addAudioFile(path);
@@ -715,7 +696,6 @@ struct MyApp : public App {
                     createPickableForSource(sourceId);
                     loadedCount++;
                     
-                    // Progress feedback every 5 files
                     if (loadedCount % 5 == 0) {
                         std::cout << "Loaded " << loadedCount << "/" << filepaths.size() << " files..." << std::endl;
                     }
@@ -730,7 +710,6 @@ struct MyApp : public App {
         AudioSource* source = sourceManager->getSource(sourceId);
         if (!source) return;
         
-        // REUSE a single sphere mesh instead of creating new ones
         static bool sphereMeshCreated = false;
         static VAOMesh sharedSphereMesh;
         
@@ -742,7 +721,7 @@ struct MyApp : public App {
         }
         
         auto pickable = std::make_unique<SelectablePickable>(sourceId);
-        pickable->set(sharedSphereMesh);  // Use shared mesh
+        pickable->set(sharedSphereMesh);
         pickable->setSourceColor(source->color);
         pickable->pose = Pose(source->position * visualRadius);
         
@@ -766,6 +745,73 @@ struct MyApp : public App {
         std::cout << "Removed source " << sourceId << std::endl;
     }
 
+void loadHeadphoneEQ(int eqIndex) {
+    if (eqIndex == 0) {
+        currentHeadphoneEQIndex = 0;
+        std::cout << "Headphone EQ: OFF" << std::endl;
+        return;
+    }
+    
+    const char* headphoneEQFilenames[] = {
+        "",
+        "AKG-K141MK2", "AKG-K240DF", "AKG-K240MK2", "AKG-K271MK2",
+        "AKG-K271STUDIO", "AKG-K601", "AKG-K701", "AKG-K702",
+        "AKG-K1000-Closed", "AKG-K1000-Open", "AudioTechnica-ATH-M50",
+        "Beyerdynamic-DT250", "Beyerdynamic-DT770PRO-250Ohms",
+        "Beyerdynamic-DT880", "Beyerdynamic-DT990PRO", "Presonus-HD7",
+        "Sennheiser-HD430", "Sennheiser-HD480", "Sennheiser-HD560ovationII",
+        "Sennheiser-HD565ovation", "Sennheiser-HD600", "Sennheiser-HD650",
+        "SHURE-SRH940"
+    };
+    
+    std::string filename = std::string(headphoneEQFilenames[eqIndex]) + ".wav";
+    std::string filepath = "../assets/Headphone_EQ/" + filename;
+    
+    juce::File eqFile(filepath);
+    if (!eqFile.exists()) {
+        std::cerr << "Headphone EQ file not found: " << filepath << std::endl;
+        return;
+    }
+    
+    std::unique_ptr<juce::AudioFormatReader> reader(audioFormatManager.createReaderFor(eqFile));
+    if (!reader || reader->numChannels != 2) {
+        std::cerr << "Invalid headphone EQ file" << std::endl;
+        return;
+    }
+    
+    int irLength = static_cast<int>(reader->lengthInSamples);
+    
+    // Load the stereo IR at its native sample rate (48kHz)
+    juce::AudioBuffer<float> stereoIR(2, irLength);
+    reader->read(&stereoIR, 0, irLength, 0, true, true);
+    
+    // Split into separate L/R channels
+    juce::AudioBuffer<float> irLeft(1, irLength);
+    juce::AudioBuffer<float> irRight(1, irLength);
+    irLeft.copyFrom(0, 0, stereoIR, 0, 0, irLength);
+    irRight.copyFrom(0, 0, stereoIR, 1, 0, irLength);
+    
+    // Let JUCE handle resampling from 48kHz to 44.1kHz internally
+    headphoneEQ_L->loadImpulseResponse(
+        std::move(irLeft), 
+        reader->sampleRate,  // Pass the actual IR sample rate (48000)
+        juce::dsp::Convolution::Stereo::no,
+        juce::dsp::Convolution::Trim::no,
+        juce::dsp::Convolution::Normalise::no
+    );
+    
+    headphoneEQ_R->loadImpulseResponse(
+        std::move(irRight), 
+        reader->sampleRate,  // JUCE resamples to 44100 automatically
+        juce::dsp::Convolution::Stereo::no,
+        juce::dsp::Convolution::Trim::no,
+        juce::dsp::Convolution::Normalise::no
+    );
+    
+    currentHeadphoneEQIndex = eqIndex;
+    std::cout << "Loaded headphone EQ: " << headphoneEQFilenames[eqIndex] << std::endl;
+}
+
     void onCreate() override {
         double sampleRate = audioIO().framesPerSecond();
         int frameSize = audioIO().framesPerBuffer();
@@ -777,6 +823,19 @@ struct MyApp : public App {
         ambiEncoder = new AmbisonicEncoder(1, frameSize, sampleRate);
         ambiDecoder = new AmbisonicBinauralDecoder(1, sampleRate, frameSize, currentTDesign);
         reverbProcessor = std::make_unique<AmbisonicReverbProcessor>(1, sampleRate, frameSize, currentTDesign);
+        
+        headphoneEQ_L = std::make_unique<juce::dsp::Convolution>();
+        headphoneEQ_R = std::make_unique<juce::dsp::Convolution>();
+
+        juce::dsp::ProcessSpec eqSpec;
+        eqSpec.sampleRate = sampleRate;
+        eqSpec.maximumBlockSize = static_cast<juce::uint32>(frameSize);
+        eqSpec.numChannels = 1;
+
+        headphoneEQ_L->prepare(eqSpec);
+        headphoneEQ_R->prepare(eqSpec);
+
+        std::cout << "Headphone EQ processors initialized" << std::endl;
         
         createWireframeSphere(sphereMesh, visualRadius, 24, 16);
         sphereMesh.primitive(Mesh::LINES);
@@ -795,583 +854,650 @@ struct MyApp : public App {
         leftOutputBuffer = new float[bufferSize];
         rightOutputBuffer = new float[bufferSize];
        
-       nav().pos(0, 0, 8);
-       nav().faceToward(Vec3d(0, 0, 0), Vec3d(0, 1, 0));
+        nav().pos(0, 0, 8);
+        nav().faceToward(Vec3d(0, 0, 0), Vec3d(0, 1, 0));
        
-       std::cout << "Multi-Source Ambisonics-to-Binaural Renderer:" << std::endl;
-       std::cout << "  1. Enter file paths in the GUI text fields" << std::endl;
-       std::cout << "  2. Click and drag sound sources to move them" << std::endl;
-       std::cout << "  3. Use play/pause controls for synchronized playback" << std::endl;
-       std::cout << "  4. Select different T-design layouts for quality/performance balance" << std::endl;
-       std::cout << "  5. Choose acoustic environments for ambisonic reverb" << std::endl;
-   }
-
-void updateAmbisonicOrderSafely(SpeakerLayout::TDesignType newTDesign) {
-    audioIO().stop();
-
-    if (newTDesign == currentTDesign) {
-        audioIO().start();
-        return;
+        std::cout << "Multi-Source Ambisonics-to-Binaural Renderer:" << std::endl;
+        std::cout << "  1. Enter file paths in the GUI text fields" << std::endl;
+        std::cout << "  2. Click and drag sound sources to move them" << std::endl;
+        std::cout << "  3. Use play/pause controls for synchronized playback" << std::endl;
+        std::cout << "  4. Select different T-design layouts for quality/performance balance" << std::endl;
+        std::cout << "  5. Choose acoustic environments for ambisonic reverb" << std::endl;
     }
 
-    std::cout << "Safely updating T-design to: " << SpeakerLayout::getTDesignName(newTDesign) << std::endl;
+    void updateAmbisonicOrderSafely(SpeakerLayout::TDesignType newTDesign) {
+        audioIO().stop();
 
-    double sampleRate = audioIO().framesPerSecond();
-    int frameSize = audioIO().framesPerBuffer();
-    int newOrder = SpeakerLayout::getRecommendedOrder(newTDesign);
+        if (newTDesign == currentTDesign) {
+            audioIO().start();
+            return;
+        }
 
-    try {
+        std::cout << "Safely updating T-design to: " << SpeakerLayout::getTDesignName(newTDesign) << std::endl;
+
+        double sampleRate = audioIO().framesPerSecond();
+        int frameSize = audioIO().framesPerBuffer();
+        int newOrder = SpeakerLayout::getRecommendedOrder(newTDesign);
+
+        try {
+            delete ambiEncoder;
+            delete ambiDecoder;
+
+            currentTDesign = newTDesign;
+            ambiEncoder = new AmbisonicEncoder(newOrder, frameSize, sampleRate);
+            ambiDecoder = new AmbisonicBinauralDecoder(newOrder, sampleRate, frameSize, currentTDesign);
+
+            reverbProcessor->updateTDesign(newTDesign);
+            
+            sourceManager->updateSmoothingParameters(sampleRate);
+            setupVirtualSpeakerPositions();
+            
+            std::cout << "Successfully updated to " << SpeakerLayout::getTDesignName(newTDesign) 
+                      << " (order " << newOrder << ")" << std::endl;
+
+        } catch (const std::exception& e) {
+            std::cerr << "Error updating T-design: " << e.what() << std::endl;
+        }
+
+        audioIO().start();
+    }
+   
+    Vec3f constrainToSphere(const Vec3f& point) {
+        float radius = point.mag();
+        if (radius < 0.0001f)
+            return Vec3f(0, 0, -visualRadius);
+        return point.normalized() * visualRadius;
+    }
+   
+    void onAnimate(double dt) override {
+        navControl().active(!gui.usingInput());
+       
+        if (!gui.usingInput()) {
+            pickablesUpdatingParameters = true;
+           
+            for (auto& pickable : sourcePickables) {
+                Vec3f pos = pickable->pose.get().pos();
+                Vec3f constrained = constrainToSphere(pos);
+                pickable->pose.set(Pose(constrained));
+               
+                float az, el, radius;
+                cartesianToSpherical(constrained, az, el, radius);
+               
+                AudioSource* source = sourceManager->getSource(pickable->sourceId);
+                if (source) {
+                    source->setPosition(az, el);
+                }
+            }
+           
+            pickablesUpdatingParameters = false;
+        }
+    }
+
+    void onDraw(Graphics &g) override {
+        g.clear(0);
+        gl::depthTesting(true);
+        
+        g.lineWidth(2.0);
+        Mesh axes;
+        axes.primitive(Mesh::LINES);
+        
+        g.color(1, 0, 0);
+        axes.vertex(0, 0, 0);
+        axes.vertex(1, 0, 0);
+        
+        g.color(0, 1, 0);
+        axes.vertex(0, 0, 0);
+        axes.vertex(0, 1, 0);
+        
+        g.color(0, 0, 1);
+        axes.vertex(0, 0, 0);
+        axes.vertex(0, 0, 1);
+        
+        g.draw(axes);
+        
+        if (headScene && !headMeshes.empty()) {
+            g.pushMatrix();
+            g.translate(0, 0, 0);
+            g.rotate(180, 0, 1, 0);
+            
+            float headScale = 0.5f;
+            float maxDimension = std::max({
+                headSceneMax.x - headSceneMin.x,
+                headSceneMax.y - headSceneMin.y, 
+                headSceneMax.z - headSceneMin.z
+            });
+            if (maxDimension > 0) {
+                headScale = 1.5f / maxDimension;
+            }
+            
+            g.scale(headScale);
+            g.translate(-headSceneCenter);
+            g.color(0.3, 0.25, 0.2, 1.0);
+            g.lighting(true);
+            
+            for (const auto& mesh : headMeshes) {
+                g.draw(mesh);
+            }
+            
+            g.popMatrix();
+        }
+        
+        g.depthMask(false);
+        g.color(1.0, 1.0, 1.0, 1.0);
+        g.lineWidth(3.5);
+        g.polygonMode(GL_LINE);
+        g.draw(sphereMesh);
+        g.depthMask(true);
+        
+        g.polygonMode(GL_FILL);
+        for (int i = 0; i < virtualSpeakerPositions.size(); i++) {
+            Vec3f speakerPos = virtualSpeakerPositions[i];
+            
+            g.pushMatrix();
+            g.translate(speakerPos);
+            
+            Vec3f eye = speakerPos;
+            Vec3f center = Vec3f(0, 0, 0);
+            Vec3f up = Vec3f(0, 1, 0);
+            
+            Vec3f forward = (center - eye).normalize();
+            Vec3f right = cross(forward, up).normalize();
+            up = cross(right, forward).normalize();
+            
+            float matrix[16] = {
+                right.x,   right.y,   right.z,   0,
+                up.x,      up.y,      up.z,      0,
+                -forward.x, -forward.y, -forward.z, 0,
+                0,         0,         0,         1
+            };
+            
+            g.multModelMatrix(Matrix4f(matrix));
+            g.rotate(270, 0, 1, 0);
+            g.rotate(90, 1, 0, 0);
+
+            if (speakerScene && !speakerMeshes.empty()) {
+                float speakerScale = 0.15f;
+                float maxDimension = std::max({
+                    speakerSceneMax.x - speakerSceneMin.x,
+                    speakerSceneMax.y - speakerSceneMin.y, 
+                    speakerSceneMax.z - speakerSceneMin.z
+                });
+                if (maxDimension > 0) {
+                    speakerScale = 0.4f / maxDimension;
+                }
+                
+                g.scale(speakerScale);
+                g.translate(-speakerSceneCenter);
+                g.color(0.9, 0.9, 0.9, 1.0);
+                g.lighting(true);
+                
+                for (const auto& mesh : speakerMeshes) {
+                    g.draw(mesh);
+                }
+            } else {
+                g.color(1.0, 0.6, 0.2, 0.8);
+                Mesh sphereMesh;
+                addSphere(sphereMesh, 0.1);
+                g.draw(sphereMesh);
+            }
+            
+            g.popMatrix();
+        }
+        
+        g.polygonMode(GL_FILL);
+        g.lighting(false);
+        for (auto& pickable : sourcePickables) {
+            AudioSource* source = sourceManager->getSource(pickable->sourceId);
+            if (source) {
+                float brightR = std::min(1.0f, source->color.r * 1.5f + 0.3f);
+                float brightG = std::min(1.0f, source->color.g * 1.5f + 0.1f);
+                float brightB = std::min(1.0f, source->color.b * 1.5f + 0.1f);
+                
+                if (source->color.r > source->color.g && source->color.r > source->color.b) {
+                    brightR = std::min(1.0f, brightR + 0.2f);
+                } else if (source->color.g > source->color.r && source->color.g > source->color.b) {
+                    brightG = std::min(1.0f, brightG + 0.2f);
+                } else if (source->color.b > source->color.r && source->color.b > source->color.g) {
+                    brightB = std::min(1.0f, brightB + 0.2f);
+                }
+                
+                g.color(brightR, brightG, brightB, 1.0f);
+                
+                if (pickable->selected || pickable->sourceId == selectedSourceId) {
+                    g.lineWidth(3.0);
+                    g.color(1.0, 1.0, 1.0, 1.0);
+                    g.polygonMode(GL_LINE);
+                    
+                    pickable->draw(g, [&](Pickable &p) {
+                        auto &b = dynamic_cast<PickableBB &>(p);
+                        b.drawMesh(g);
+                    });
+                    
+                    g.polygonMode(GL_FILL);
+                    g.color(brightR, brightG, brightB, 1.0f);
+                }
+                
+                pickable->draw(g, [&](Pickable &p) {
+                    auto &b = dynamic_cast<PickableBB &>(p);
+                    b.drawMesh(g);
+                });
+                
+                pickable->selected = false;
+            }
+        }
+        g.lighting(true);
+        
+        imguiBeginFrame();
+        ImGui::Begin("Multi-Source Audio Control");
+
+        ImGui::Text("Audio File Paths:");
+        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "(Enter one or more paths,");
+        ImGui::SameLine(0, 0);
+        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), " one per line)");
+
+        static char filePathsBuffer[2048] = "";
+        if (ImGui::InputTextMultiline("##filepaths", filePathsBuffer, sizeof(filePathsBuffer), 
+            ImVec2(400, 100), ImGuiInputTextFlags_EnterReturnsTrue)) {
+            std::string pathsString(filePathsBuffer);
+            if (!pathsString.empty()) {
+                loadMultipleAudioFilesFromPaths(pathsString);
+                memset(filePathsBuffer, 0, sizeof(filePathsBuffer));
+            }
+        }
+
+        if (ImGui::Button("Load Audio Files")) {
+            std::string pathsString(filePathsBuffer);
+            if (!pathsString.empty()) {
+                loadMultipleAudioFilesFromPaths(pathsString);
+                memset(filePathsBuffer, 0, sizeof(filePathsBuffer));
+            }
+        }
+        
+        ImGui::Separator();
+        
+        if (sourceManager->getSourceCount() > 10) {
+            ImGui::TextColored(ImVec4(1, 1, 0, 1), "Warning: %zu sources loaded", sourceManager->getSourceCount());
+            ImGui::TextColored(ImVec4(1, 1, 0, 1), "Performance may be affected with many sources");
+        }
+        
+        ImGui::Text("Playback Control:");
+        ImGui::BeginGroup();
+        {
+            bool isPlaying = sourceManager->getIsPlaying();
+            bool isPaused = sourceManager->getIsPaused();
+            
+            if (!isPlaying && !isPaused) {
+                if (ImGui::Button("Play")) {
+                    sourceManager->play();
+                }
+            } else if (isPlaying) {
+                if (ImGui::Button("Pause")) {
+                    sourceManager->pause();
+                }
+            } else if (isPaused) {
+                if (ImGui::Button("Resume")) {
+                    sourceManager->play();
+                }
+            }
+            
+            ImGui::SameLine();
+            if (ImGui::Button("Stop")) {
+                sourceManager->stop();
+            }
+            
+            ImGui::SameLine();
+            bool sessionLoop = sourceManager->sessionLooping;
+            if (ImGui::Checkbox("Loop", &sessionLoop)) {
+                sourceManager->sessionLooping = sessionLoop;
+            }
+            
+            ImGui::SameLine();
+            if (isPlaying) {
+                ImGui::TextColored(ImVec4(0, 1, 0, 1), "PLAYING");
+            } else if (isPaused) {
+                ImGui::TextColored(ImVec4(1, 1, 0, 1), "PAUSED");
+            } else {
+                ImGui::TextColored(ImVec4(0.5, 0.5, 0.5, 1), "STOPPED");
+            }
+        }
+        ImGui::EndGroup();
+        
+        ImGui::Separator();
+        
+        ImGui::Text("Speaker Layout:");
+        int currentTDesignInt = static_cast<int>(currentTDesign);
+        auto allNames = SpeakerLayout::getAllTDesignNames();
+        std::vector<const char*> namesCStr;
+        for (const auto& name : allNames) {
+            namesCStr.push_back(name.c_str());
+        }
+        
+        if (ImGui::Combo("##speakerlayout", &currentTDesignInt, namesCStr.data(), namesCStr.size())) {
+            SpeakerLayout::TDesignType newTDesign = static_cast<SpeakerLayout::TDesignType>(currentTDesignInt);
+            updateAmbisonicOrderSafely(newTDesign);
+        }
+        
+        ImGui::Separator();
+        
+        ImGui::Text("Acoustic Space:");
+        int currentEnvInt = static_cast<int>(reverbProcessor->getCurrentEnvironment());
+        auto allEnvNames = reverbProcessor->getAllEnvironmentNames();
+        std::vector<const char*> envNamesCStr;
+        for (const auto& name : allEnvNames) {
+            envNamesCStr.push_back(name.c_str());
+        }
+        
+        if (ImGui::Combo("##environment", &currentEnvInt, envNamesCStr.data(), envNamesCStr.size())) {
+            AmbisonicReverbProcessor::ReverbEnvironment newEnv = 
+                static_cast<AmbisonicReverbProcessor::ReverbEnvironment>(currentEnvInt);
+            reverbProcessor->setEnvironment(newEnv);
+        }
+
+        ImGui::Separator();
+
+        ImGui::Text("Headphone Equalization:");
+        static int currentHeadphoneEQ = 0;
+        static const char* headphoneEQOptions[] = {
+            "OFF",
+            "AKG-K141MK2",
+            "AKG-K240DF", 
+            "AKG-K240MK2",
+            "AKG-K271MK2",
+            "AKG-K271STUDIO",
+            "AKG-K601",
+            "AKG-K701",
+            "AKG-K702",
+            "AKG-K1000-Closed", 
+            "AKG-K1000-Open",
+            "AudioTechnica-ATH-M50",
+            "Beyerdynamic-DT250",
+            "Beyerdynamic-DT770PRO-250Ohms",
+            "Beyerdynamic-DT880",
+            "Beyerdynamic-DT990PRO",
+            "Presonus-HD7",
+            "Sennheiser-HD430",
+            "Sennheiser-HD480",
+            "Sennheiser-HD560ovationII", 
+            "Sennheiser-HD565ovation",
+            "Sennheiser-HD600",
+            "Sennheiser-HD650",
+            "SHURE-SRH940"
+        };
+        static const int numHeadphoneEQOptions = sizeof(headphoneEQOptions) / sizeof(headphoneEQOptions[0]);
+
+        if (ImGui::Combo("##headphoneeq", &currentHeadphoneEQ, headphoneEQOptions, numHeadphoneEQOptions)) {
+            loadHeadphoneEQ(currentHeadphoneEQ);
+        }
+
+        ImGui::Separator();
+
+        ImGui::Text("Head Tracking:");
+
+        static bool enableHeadTracking = false;
+        if (ImGui::Checkbox("Enable Head Tracking", &enableHeadTracking)) {
+            std::cout << "Head tracking " << (enableHeadTracking ? "enabled" : "disabled") << std::endl;
+        }
+
+        ImGui::Text("OSC Port:");
+        ImGui::SameLine();
+        static char oscPortBuffer[16] = "9000";
+        ImGui::PushItemWidth(80);
+        if (ImGui::InputText("##oscport", oscPortBuffer, sizeof(oscPortBuffer))) {
+            std::cout << "OSC Port set to: " << oscPortBuffer << std::endl;
+        }
+        ImGui::PopItemWidth();
+
+        ImGui::Text("Manual Control:");
+
+        static float yawValue = 0.0f;
+        static float pitchValue = 0.0f;
+        static float rollValue = 0.0f;
+
+        ImGui::Text("Yaw");
+        ImGui::SameLine(100);
+        ImGui::Text("Pitch");
+        ImGui::SameLine(200);
+        ImGui::Text("Roll");
+
+        ImGui::PushItemWidth(80);
+        if (ImGui::SliderFloat("##yaw", &yawValue, -180.0f, 180.0f, "%.0f°")) {
+            std::cout << "Yaw: " << yawValue << "°" << std::endl;
+        }
+        ImGui::PopItemWidth();
+
+        ImGui::SameLine(100);
+        ImGui::PushItemWidth(80);
+        if (ImGui::SliderFloat("##pitch", &pitchValue, -90.0f, 90.0f, "%.0f°")) {
+            std::cout << "Pitch: " << pitchValue << "°" << std::endl;
+        }
+        ImGui::PopItemWidth();
+
+        ImGui::SameLine(200);
+        ImGui::PushItemWidth(80);
+        if (ImGui::SliderFloat("##roll", &rollValue, -180.0f, 180.0f, "%.0f°")) {
+            std::cout << "Roll: " << rollValue << "°" << std::endl;
+        }
+        ImGui::PopItemWidth();
+
+        ImGui::Separator();
+
+        ImGui::Text("HRTF Dataset:");
+
+        static bool useDefaultHRTF = true;
+        if (ImGui::Checkbox("Use Default HRTF set", &useDefaultHRTF)) {
+            std::cout << "Use default HRTF: " << (useDefaultHRTF ? "enabled" : "disabled") << std::endl;
+        }
+
+        ImGui::Text("Custom SOFA File:");
+        static char sofaFilePath[512] = "";
+
+        ImGui::PushItemWidth(250);
+        ImGui::InputText("##sofapath", sofaFilePath, sizeof(sofaFilePath));
+        ImGui::PopItemWidth();
+
+        ImGui::SameLine();
+        if (ImGui::Button("Browse...")) {
+            std::cout << "Open SOFA file browser" << std::endl;
+        }
+
+        if (ImGui::Button("Load SOFA File")) {
+            std::cout << "Loading SOFA file: " << sofaFilePath << std::endl;
+        }
+        
+        ImGui::Separator();
+        
+        ImGui::Text("Loaded Sources (%zu):", sourceManager->getSourceCount());
+        
+        const auto& sources = sourceManager->getSources();
+        for (const auto& source : sources) {
+            ImGui::PushID(source->sourceId);
+            
+            ImVec4 color(source->color.r, source->color.g, source->color.b, source->color.a);
+            ImGui::ColorButton("##color", color, ImGuiColorEditFlags_NoTooltip, ImVec2(20, 20));
+            
+            ImGui::SameLine();
+            
+            bool isSelected = (selectedSourceId == source->sourceId);
+            if (ImGui::Selectable(source->filename.c_str(), isSelected)) {
+                selectedSourceId = isSelected ? -1 : source->sourceId;
+            }
+            
+            if (isSelected) {
+                ImGui::Indent();
+                
+                float az = source->azimuth;
+                float el = source->elevation;
+                
+                if (ImGui::SliderFloat("Azimuth", &az, -180.0f, 180.0f)) {
+                    source->setPosition(az, el);
+                    
+                    for (auto& pickable : sourcePickables) {
+                        if (pickable->sourceId == source->sourceId) {
+                            Vec3f newPos = sphericalToCartesian(az, el, visualRadius);
+                            pickable->pose = Pose(newPos);
+                            break;
+                        }
+                    }
+                }
+                
+                if (ImGui::SliderFloat("Elevation", &el, -90.0f, 90.0f)) {
+                    source->setPosition(az, el);
+                    
+                    for (auto& pickable : sourcePickables) {
+                        if (pickable->sourceId == source->sourceId) {
+                            Vec3f newPos = sphericalToCartesian(az, el, visualRadius);
+                            pickable->pose = Pose(newPos);
+                            break;
+                        }
+                    }
+                }
+                
+                float gain = source->gain;
+                if (ImGui::SliderFloat("Gain", &gain, 0.0f, 2.0f)) {
+                    sourceManager->setSourceGain(source->sourceId, gain);
+                }
+                
+                bool muted = source->isMuted;
+                if (ImGui::Checkbox("M", &muted)) {
+                    source->isMuted = muted;
+                }
+                
+                ImGui::SameLine();
+                bool soloed = source->isSoloed;
+                if (ImGui::Checkbox("S", &soloed)) {
+                    source->isSoloed = soloed;
+                }
+                
+                if (ImGui::Button("Remove Source")) {
+                    removeSource(source->sourceId);
+                    selectedSourceId = -1;
+                }
+                
+                ImGui::Unindent();
+            }
+            
+            ImGui::PopID();
+        }
+        
+        ImGui::Separator();
+        
+        ImGui::Text("System Info:");
+        ImGui::Text("Current Layout: %s", SpeakerLayout::getTDesignName(currentTDesign).c_str());
+        ImGui::Text("Virtual Speakers: %d", SpeakerLayout::getSpeakerCount(currentTDesign));
+        ImGui::Text("Ambisonic Order: %d", SpeakerLayout::getRecommendedOrder(currentTDesign));
+        ImGui::Text("Current Environment: %s", reverbProcessor->getCurrentEnvironmentName().c_str());
+        ImGui::Text("Sample Rate: %.0f Hz", audioIO().framesPerSecond());
+        ImGui::Text("Buffer Size: %d samples", audioIO().framesPerBuffer());
+        
+        ImGui::End();
+        
+        imguiEndFrame();
+        imguiDraw();
+    }
+
+    void onSound(AudioIOData &io) override {
+        Pose& listenerPose = scene.listenerPose();
+        listenerPose = fixedListenerPose;
+        
+        int nFrames = io.framesPerBuffer();
+        
+        if (nFrames > bufferSize) {
+            delete[] leftOutputBuffer;
+            delete[] rightOutputBuffer;
+            
+            bufferSize = nFrames;
+            leftOutputBuffer = new float[bufferSize];
+            rightOutputBuffer = new float[bufferSize];
+        }
+        
+        memset(leftOutputBuffer, 0, nFrames * sizeof(float));
+        memset(rightOutputBuffer, 0, nFrames * sizeof(float));
+        
+        if (ambiEncoder && ambiDecoder && sourceManager && reverbProcessor) {
+            bool shouldPlay = sourceManager->isPlaying && !sourceManager->isPaused;
+            
+            if (shouldPlay) {
+                sourceManager->processAudio(ambiEncoder, nFrames);
+                ambiDecoder->decodeWithReverb(ambiEncoder->ambiSignals, leftOutputBuffer, rightOutputBuffer, nFrames, reverbProcessor.get());
+                
+                if (currentHeadphoneEQIndex > 0 && headphoneEQ_L && headphoneEQ_R) {
+                    juce::dsp::AudioBlock<float> leftBlock(&leftOutputBuffer, 1, 0, static_cast<size_t>(nFrames));
+                    juce::dsp::AudioBlock<float> rightBlock(&rightOutputBuffer, 1, 0, static_cast<size_t>(nFrames));
+                    
+                    headphoneEQ_L->process(juce::dsp::ProcessContextReplacing<float>(leftBlock));
+                    headphoneEQ_R->process(juce::dsp::ProcessContextReplacing<float>(rightBlock));
+                }
+            } else {
+                ambiEncoder->clearSignals();
+            }
+        }
+        
+        for (int i = 0; i < nFrames; i++) {
+            io.out(0, i) = leftOutputBuffer[i];
+            io.out(1, i) = rightOutputBuffer[i];
+        }
+    }
+
+    void onExit() override {
         delete ambiEncoder;
         delete ambiDecoder;
-
-        currentTDesign = newTDesign;
-        ambiEncoder = new AmbisonicEncoder(newOrder, frameSize, sampleRate);
-        ambiDecoder = new AmbisonicBinauralDecoder(newOrder, sampleRate, frameSize, currentTDesign);
-
-        // Update reverb processor with new T-design
-        reverbProcessor->updateTDesign(newTDesign);
-        
-        // Reset normalizer for new configuration
-
-        sourceManager->updateSmoothingParameters(sampleRate);
-        setupVirtualSpeakerPositions();
-        
-        std::cout << "Successfully updated to " << SpeakerLayout::getTDesignName(newTDesign) 
-                  << " (order " << newOrder << ")" << std::endl;
-
-    } catch (const std::exception& e) {
-        std::cerr << "Error updating T-design: " << e.what() << std::endl;
-    }
-
-    audioIO().start();
-}
-   
-   Vec3f constrainToSphere(const Vec3f& point) {
-       float radius = point.mag();
-       if (radius < 0.0001f)
-           return Vec3f(0, 0, -visualRadius);
-       return point.normalized() * visualRadius;
-   }
-   
-   void onAnimate(double dt) override {
-       navControl().active(!gui.usingInput());
-       
-       if (!gui.usingInput()) {
-           pickablesUpdatingParameters = true;
-           
-           for (auto& pickable : sourcePickables) {
-               Vec3f pos = pickable->pose.get().pos();
-               Vec3f constrained = constrainToSphere(pos);
-               pickable->pose.set(Pose(constrained));
-               
-               float az, el, radius;
-               cartesianToSpherical(constrained, az, el, radius);
-               
-               // CRITICAL FIX: Always update source position regardless of timing
-               // This ensures that dragging any pickable immediately updates the corresponding source
-               AudioSource* source = sourceManager->getSource(pickable->sourceId);
-               if (source) {
-                   // Update the source position directly
-                   source->setPosition(az, el);
-               }
-           }
-           
-           pickablesUpdatingParameters = false;
-       }
-   }
-
-   void onDraw(Graphics &g) override {
-       g.clear(0);
-       gl::depthTesting(true);
-       
-       // Draw coordinate axes
-       g.lineWidth(2.0);
-       Mesh axes;
-       axes.primitive(Mesh::LINES);
-       
-       g.color(1, 0, 0);
-       axes.vertex(0, 0, 0);
-       axes.vertex(1, 0, 0);
-       
-       g.color(0, 1, 0);
-       axes.vertex(0, 0, 0);
-       axes.vertex(0, 1, 0);
-       
-       g.color(0, 0, 1);
-       axes.vertex(0, 0, 0);
-       axes.vertex(0, 0, 1);
-       
-       g.draw(axes);
-       
-       // Draw head model
-       if (headScene && !headMeshes.empty()) {
-           g.pushMatrix();
-           g.translate(0, 0, 0);
-           g.rotate(180, 0, 1, 0);
-           
-           float headScale = 0.5f;
-           float maxDimension = std::max({
-               headSceneMax.x - headSceneMin.x,
-               headSceneMax.y - headSceneMin.y, 
-               headSceneMax.z - headSceneMin.z
-           });
-           if (maxDimension > 0) {
-               headScale = 1.5f / maxDimension;
-           }
-           
-           g.scale(headScale);
-           g.translate(-headSceneCenter);
-           g.color(0.3, 0.25, 0.2, 1.0);
-           g.lighting(true);
-           
-           for (const auto& mesh : headMeshes) {
-               g.draw(mesh);
-           }
-           
-           g.popMatrix();
-       }
-       
-       // Draw wireframe sphere
-       g.depthMask(false);
-       g.color(1.0, 1.0, 1.0, 1.0);
-       g.lineWidth(2.5);
-       g.polygonMode(GL_LINE);
-       g.draw(sphereMesh);
-       g.depthMask(true);
-       
-       // Draw virtual speakers
-       g.polygonMode(GL_FILL);
-       for (int i = 0; i < virtualSpeakerPositions.size(); i++) {
-           Vec3f speakerPos = virtualSpeakerPositions[i];
-           
-           g.pushMatrix();
-           g.translate(speakerPos);
-           
-           // Calculate orientation to face center
-           Vec3f eye = speakerPos;
-           Vec3f center = Vec3f(0, 0, 0);
-           Vec3f up = Vec3f(0, 1, 0);
-           
-           Vec3f forward = (center - eye).normalize();
-           Vec3f right = cross(forward, up).normalize();
-           up = cross(right, forward).normalize();
-           
-           float matrix[16] = {
-               right.x,   right.y,   right.z,   0,
-               up.x,      up.y,      up.z,      0,
-               -forward.x, -forward.y, -forward.z, 0,
-               0,         0,         0,         1
-           };
-           
-           g.multModelMatrix(Matrix4f(matrix));
-           g.rotate(270, 0, 1, 0);
-           g.rotate(90, 1, 0, 0);
-
-           if (speakerScene && !speakerMeshes.empty()) {
-               float speakerScale = 0.15f;
-               float maxDimension = std::max({
-                   speakerSceneMax.x - speakerSceneMin.x,
-                   speakerSceneMax.y - speakerSceneMin.y, 
-                   speakerSceneMax.z - speakerSceneMin.z
-               });
-               if (maxDimension > 0) {
-                   speakerScale = 0.4f / maxDimension;
-               }
-               
-               g.scale(speakerScale);
-               g.translate(-speakerSceneCenter);
-               g.color(0.9, 0.9, 0.9, 1.0);
-               g.lighting(true);
-               
-               for (const auto& mesh : speakerMeshes) {
-                   g.draw(mesh);
-               }
-           } else {
-               // Fallback: simple sphere if speaker model fails to load
-               g.color(1.0, 0.6, 0.2, 0.8);
-               Mesh sphereMesh;
-               addSphere(sphereMesh, 0.1);
-               g.draw(sphereMesh);
-           }
-           
-           g.popMatrix();
-       }
-       
-       // Draw audio sources with increased brightness
-// Draw audio sources with emissive bright colors (no lighting)
-g.polygonMode(GL_FILL);
-g.lighting(false);  // Disable lighting for balls
-for (auto& pickable : sourcePickables) {
-    AudioSource* source = sourceManager->getSource(pickable->sourceId);
-    if (source) {
-        // Boost saturation and brightness while preserving color identity
-        float brightR = std::min(1.0f, source->color.r * 1.5f + 0.3f);
-        float brightG = std::min(1.0f, source->color.g * 1.5f + 0.1f);  // Less green boost
-        float brightB = std::min(1.0f, source->color.b * 1.5f + 0.1f);  // Less blue boost
-        
-        // Further enhance the dominant color channel
-        if (source->color.r > source->color.g && source->color.r > source->color.b) {
-            // Red is dominant - boost red more
-            brightR = std::min(1.0f, brightR + 0.2f);
-        } else if (source->color.g > source->color.r && source->color.g > source->color.b) {
-            // Green is dominant - boost green more
-            brightG = std::min(1.0f, brightG + 0.2f);
-        } else if (source->color.b > source->color.r && source->color.b > source->color.g) {
-            // Blue is dominant - boost blue more
-            brightB = std::min(1.0f, brightB + 0.2f);
-        }
-        
-        g.color(brightR, brightG, brightB, 1.0f);  // Full alpha
-        
-        if (pickable->selected || pickable->sourceId == selectedSourceId) {
-            g.lineWidth(3.0);
-            g.color(1.0, 1.0, 1.0, 1.0);  // Pure white for selection
-            g.polygonMode(GL_LINE);
-            
-            pickable->draw(g, [&](Pickable &p) {
-                auto &b = dynamic_cast<PickableBB &>(p);
-                b.drawMesh(g);
-            });
-            
-            g.polygonMode(GL_FILL);
-            g.color(brightR, brightG, brightB, 1.0f);
-        }
-        
-        pickable->draw(g, [&](Pickable &p) {
-            auto &b = dynamic_cast<PickableBB &>(p);
-            b.drawMesh(g);
-        });
-        
-        pickable->selected = false;
-    }
-}
-g.lighting(true);  // Re-enable lighting for other objects
-       
-       // Draw GUI
-       imguiBeginFrame();
-       gui.draw(g);
-       
-       ImGui::Begin("Multi-Source Audio Control");
-       
-       ImGui::Text("Audio File Loading:");
-       
-       // Single file loading
-       ImGui::Text("Single File Path:");
-       static char filePathBuffer[512] = "";
-       if (ImGui::InputText("##singlefile", filePathBuffer, sizeof(filePathBuffer), ImGuiInputTextFlags_EnterReturnsTrue)) {
-           std::string filepath(filePathBuffer);
-           if (!filepath.empty()) {
-               loadSingleAudioFileFromPath(filepath);
-               memset(filePathBuffer, 0, sizeof(filePathBuffer));
-           }
-       }
-       ImGui::SameLine();
-       if (ImGui::Button("Load Single File")) {
-           std::string filepath(filePathBuffer);
-           if (!filepath.empty()) {
-               loadSingleAudioFileFromPath(filepath);
-               memset(filePathBuffer, 0, sizeof(filePathBuffer));
-           }
-       }
-       
-       // Multiple files loading
-       ImGui::Text("Multiple File Paths (one per line):");
-       static char multipleFilePathsBuffer[2048] = "";
-       if (ImGui::InputTextMultiline("##multiplefiles", multipleFilePathsBuffer, sizeof(multipleFilePathsBuffer), ImVec2(400, 100), ImGuiInputTextFlags_EnterReturnsTrue)) {
-           std::string pathsString(multipleFilePathsBuffer);
-           if (!pathsString.empty()) {
-               loadMultipleAudioFilesFromPaths(pathsString);
-               memset(multipleFilePathsBuffer, 0, sizeof(multipleFilePathsBuffer));
-           }
-       }
-       if (ImGui::Button("Load Multiple Files")) {
-           std::string pathsString(multipleFilePathsBuffer);
-           if (!pathsString.empty()) {
-               loadMultipleAudioFilesFromPaths(pathsString);
-               memset(multipleFilePathsBuffer, 0, sizeof(multipleFilePathsBuffer));
-           }
-       }
-       
-       ImGui::Separator();
-       
-       // Show current source count and performance warning
-       if (sourceManager->getSourceCount() > 10) {
-           ImGui::TextColored(ImVec4(1, 1, 0, 1), "Warning: %zu sources loaded", sourceManager->getSourceCount());
-           ImGui::TextColored(ImVec4(1, 1, 0, 1), "Performance may be affected with many sources");
-       }
-       
-       // Playback controls
-       ImGui::Text("Playback Control:");
-       ImGui::BeginGroup();
-       {
-           bool isPlaying = sourceManager->getIsPlaying();
-           bool isPaused = sourceManager->getIsPaused();
-           
-           if (!isPlaying && !isPaused) {
-               if (ImGui::Button("Play")) {
-                   sourceManager->play();
-               }
-           } else if (isPlaying) {
-               if (ImGui::Button("Pause")) {
-                   sourceManager->pause();
-               }
-           } else if (isPaused) {
-               if (ImGui::Button("Resume")) {
-                   sourceManager->play();
-               }
-           }
-           
-           ImGui::SameLine();
-           if (ImGui::Button("Stop")) {
-               sourceManager->stop();
-           }
-           
-           ImGui::SameLine();
-           bool sessionLoop = sourceManager->sessionLooping;
-           if (ImGui::Checkbox("Loop", &sessionLoop)) {
-               sourceManager->sessionLooping = sessionLoop;
-           }
-           
-           ImGui::SameLine();
-           if (isPlaying) {
-               ImGui::TextColored(ImVec4(0, 1, 0, 1), "PLAYING");
-           } else if (isPaused) {
-               ImGui::TextColored(ImVec4(1, 1, 0, 1), "PAUSED");
-           } else {
-               ImGui::TextColored(ImVec4(0.5, 0.5, 0.5, 1), "STOPPED");
-           }
-       }
-       ImGui::EndGroup();
-       
-       ImGui::Separator();
-       
-       // T-design selection
-       ImGui::Text("Speaker Layout:");
-       int currentTDesignInt = static_cast<int>(currentTDesign);
-       auto allNames = SpeakerLayout::getAllTDesignNames();
-       std::vector<const char*> namesCStr;
-       for (const auto& name : allNames) {
-           namesCStr.push_back(name.c_str());
-       }
-       
-       if (ImGui::Combo("T-design Layout", &currentTDesignInt, namesCStr.data(), namesCStr.size())) {
-           SpeakerLayout::TDesignType newTDesign = static_cast<SpeakerLayout::TDesignType>(currentTDesignInt);
-           updateAmbisonicOrderSafely(newTDesign);
-       }
-       
-       ImGui::Separator();
-       
-       // Acoustic Environment selection
-       ImGui::Text("Acoustic Environment:");
-       int currentEnvInt = static_cast<int>(reverbProcessor->getCurrentEnvironment());
-       auto allEnvNames = reverbProcessor->getAllEnvironmentNames();
-       std::vector<const char*> envNamesCStr;
-       for (const auto& name : allEnvNames) {
-           envNamesCStr.push_back(name.c_str());
-       }
-       
-       if (ImGui::Combo("Environment", &currentEnvInt, envNamesCStr.data(), envNamesCStr.size())) {
-           AmbisonicReverbProcessor::ReverbEnvironment newEnv = 
-               static_cast<AmbisonicReverbProcessor::ReverbEnvironment>(currentEnvInt);
-           reverbProcessor->setEnvironment(newEnv);
-       }
-       
-       ImGui::Separator();
-       
-       // Source management
-       ImGui::Text("Loaded Sources (%zu):", sourceManager->getSourceCount());
-       
-       const auto& sources = sourceManager->getSources();
-       for (const auto& source : sources) {
-           ImGui::PushID(source->sourceId);
-           
-           ImVec4 color(source->color.r, source->color.g, source->color.b, source->color.a);
-           ImGui::ColorButton("##color", color, ImGuiColorEditFlags_NoTooltip, ImVec2(20, 20));
-           
-           ImGui::SameLine();
-           
-           bool isSelected = (selectedSourceId == source->sourceId);
-           if (ImGui::Selectable(source->filename.c_str(), isSelected)) {
-               selectedSourceId = isSelected ? -1 : source->sourceId;
-           }
-           
-           if (isSelected) {
-               ImGui::Indent();
-               
-               // FIXED: Get current position directly from source and ensure bidirectional sync
-               float az = source->azimuth;
-               float el = source->elevation;
-               
-               if (ImGui::SliderFloat("Azimuth", &az, -180.0f, 180.0f)) {
-                   // Update source position directly
-                   source->setPosition(az, el);
-                   
-                   // Update pickable position to match slider
-                   for (auto& pickable : sourcePickables) {
-                       if (pickable->sourceId == source->sourceId) {
-                           Vec3f newPos = sphericalToCartesian(az, el, visualRadius);
-                           pickable->pose = Pose(newPos);
-                           break;
-                       }
-                   }
-               }
-               
-               if (ImGui::SliderFloat("Elevation", &el, -90.0f, 90.0f)) {
-                   // Update source position directly
-                   source->setPosition(az, el);
-                   
-                   // Update pickable position to match slider
-                   for (auto& pickable : sourcePickables) {
-                       if (pickable->sourceId == source->sourceId) {
-                           Vec3f newPos = sphericalToCartesian(az, el, visualRadius);
-                           pickable->pose = Pose(newPos);
-                           break;
-                       }
-                   }
-               }
-               
-               float gain = source->gain;
-               if (ImGui::SliderFloat("Gain", &gain, 0.0f, 2.0f)) {
-                   sourceManager->setSourceGain(source->sourceId, gain);
-               }
-               
-               bool muted = source->isMuted;
-               if (ImGui::Checkbox("M", &muted)) {
-                   source->isMuted = muted;
-               }
-               
-               ImGui::SameLine();
-               bool soloed = source->isSoloed;
-               if (ImGui::Checkbox("S", &soloed)) {
-                   source->isSoloed = soloed;
-               }
-               
-               if (ImGui::Button("Remove Source")) {
-                   removeSource(source->sourceId);
-                   selectedSourceId = -1;
-               }
-               
-               ImGui::Unindent();
-           }
-           
-           ImGui::PopID();
-       }
-       
-       ImGui::Separator();
-       
-       // System info
-       ImGui::Text("System Info:");
-       ImGui::Text("Current Layout: %s", SpeakerLayout::getTDesignName(currentTDesign).c_str());
-       ImGui::Text("Virtual Speakers: %d", SpeakerLayout::getSpeakerCount(currentTDesign));
-       ImGui::Text("Ambisonic Order: %d", SpeakerLayout::getRecommendedOrder(currentTDesign));
-       ImGui::Text("Current Environment: %s", reverbProcessor->getCurrentEnvironmentName().c_str());
-       ImGui::Text("Sample Rate: %.0f Hz", audioIO().framesPerSecond());
-       ImGui::Text("Buffer Size: %d samples", audioIO().framesPerBuffer());
-       
-       ImGui::End();
-       
-       imguiEndFrame();
-       imguiDraw();
-   }
-
-void onSound(AudioIOData &io) override {
-    Pose& listenerPose = scene.listenerPose();
-    listenerPose = fixedListenerPose;
-    
-    int nFrames = io.framesPerBuffer();
-    
-    if (nFrames > bufferSize) {
         delete[] leftOutputBuffer;
         delete[] rightOutputBuffer;
-        
-        bufferSize = nFrames;
-        leftOutputBuffer = new float[bufferSize];
-        rightOutputBuffer = new float[bufferSize];
     }
-    
-    // ALWAYS clear output buffers first
-    memset(leftOutputBuffer, 0, nFrames * sizeof(float));
-    memset(rightOutputBuffer, 0, nFrames * sizeof(float));
-    
-    if (ambiEncoder && ambiDecoder && sourceManager && reverbProcessor) {  // Removed outputNormalizer
-        bool shouldPlay = sourceManager->isPlaying && !sourceManager->isPaused;
-        
-        if (shouldPlay) {
-            sourceManager->processAudio(ambiEncoder, nFrames);
-            ambiDecoder->decodeWithReverb(ambiEncoder->ambiSignals, leftOutputBuffer, rightOutputBuffer, nFrames, reverbProcessor.get());
-            // Removed normalization line
-        } else {
-            ambiEncoder->clearSignals();
+
+    bool onKeyDown(const Keyboard &k) override {
+        if (k.key() == ' ') {
+            if (sourceManager->getIsPlaying()) {
+                sourceManager->pause();
+            } else {
+                sourceManager->play();
+            }
+            return true;
+        } else if (k.key() == 's') {
+            sourceManager->stop();
+            return true;
         }
+        return false;
     }
-    
-    // Output (will be clean with energy compensation)
-    for (int i = 0; i < nFrames; i++) {
-        io.out(0, i) = leftOutputBuffer[i];
-        io.out(1, i) = rightOutputBuffer[i];
+   
+    bool onMouseMove(const Mouse &m) override {
+        if (gui.usingInput()) return true;
+        pickableManager.onMouseMove(graphics(), m, width(), height());
+        return true;
     }
-}
-
-   void onExit() override {
-       delete ambiEncoder;
-       delete ambiDecoder;
-       delete[] leftOutputBuffer;
-       delete[] rightOutputBuffer;
-   }
-
-   bool onKeyDown(const Keyboard &k) override {
-       if (k.key() == ' ') {
-           if (sourceManager->getIsPlaying()) {
-               sourceManager->pause();
-           } else {
-               sourceManager->play();
-           }
-           return true;
-       } else if (k.key() == 's') {
-           sourceManager->stop();
-           return true;
-       }
-       return false;
-   }
    
-   bool onMouseMove(const Mouse &m) override {
-       if (gui.usingInput()) return true;
-       pickableManager.onMouseMove(graphics(), m, width(), height());
-       return true;
-   }
-   
-   bool onMouseDown(const Mouse &m) override {
-       if (gui.usingInput()) return true;
-       pickableManager.onMouseDown(graphics(), m, width(), height());
+bool onMouseDown(const Mouse &m) override {
+        if (gui.usingInput()) return true;
+        pickableManager.onMouseDown(graphics(), m, width(), height());
        
-       for (auto& pickable : sourcePickables) {
-           if (pickable->selected) {
-               selectedSourceId = pickable->sourceId;
-               break;
-           }
-       }
+        for (auto& pickable : sourcePickables) {
+            if (pickable->selected) {
+                selectedSourceId = pickable->sourceId;
+                break;
+            }
+        }
        
-       return true;
-   }
+        return true;
+    }
    
-   bool onMouseDrag(const Mouse &m) override {
-       if (gui.usingInput()) return true;
-       pickableManager.onMouseDrag(graphics(), m, width(), height());
-       return true;
-   }
+    bool onMouseDrag(const Mouse &m) override {
+        if (gui.usingInput()) return true;
+        pickableManager.onMouseDrag(graphics(), m, width(), height());
+        return true;
+    }
    
-   bool onMouseUp(const Mouse &m) override {
-       if (gui.usingInput()) return true;
-       pickableManager.onMouseUp(graphics(), m, width(), height());
-       return true;
-   }
+    bool onMouseUp(const Mouse &m) override {
+        if (gui.usingInput()) return true;
+        pickableManager.onMouseUp(graphics(), m, width(), height());
+        return true;
+    }
 };
 
 int main() {
-   MyApp app;
-   app.dimensions(1200, 800);
-   app.title("Ambisonics-to-Binaural Renderer");
-   app.configureAudio(44100, 256, 2, 0);  
-   app.start();
-   return 0;
+    MyApp app;
+    app.dimensions(1200, 800);
+    app.title("Ambisonics-to-Binaural Renderer");
+    app.configureAudio(44100, 256, 2, 0);  
+    app.start();
+    return 0;
 }

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 project(AlloLib-AmbisonicsToBinaural)
-set(APP_NAME AmbisonicsToiBnaural)
+set(APP_NAME AmbisonicsToBinaural)
 
 # cmake scripts are kept in the cmake directory
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)

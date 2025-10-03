@@ -8,20 +8,28 @@
 using namespace al;
 
 /**
- * @brief T-design speaker layout configurations for ambisonic decoding
+ * @brief T-design and custom speaker layout configurations for ambisonic decoding
  */
 class SpeakerLayout {
 public:
     enum TDesignType {
-        T4 = 0,   // T-design with 4 speakers
-        T12 = 1,  // T-design with 12 speakers  
-        T24 = 2,  // T-design with 24 speakers
-        T36 = 3,  // T-design with 36 speakers
-        T48 = 4   // T-design with 48 speakers
+        MONO = 0,
+        STEREO,
+        QUAD,
+        SURROUND_5_1,
+        SURROUND_7_1,
+        SURROUND_5_1_4,
+        SURROUND_7_1_4,
+        T4,
+        T12,
+        T24,
+        T36,
+        T48,
+        ALLOSPHERE
     };
     
     /**
-     * @brief Get speaker positions for a given T-design layout
+     * @brief Get speaker positions for a given layout
      */
     static std::vector<Vec3f> getTDesignPositions(TDesignType type, float radius = 1.0f) {
         std::vector<Vec3f> positions;
@@ -30,11 +38,19 @@ public:
         int count = getSpeakerCount(type);
         
         switch (type) {
-            case T4:  coords = T4_POSITIONS;  break;
-            case T12: coords = T12_POSITIONS; break;
-            case T24: coords = T24_POSITIONS; break;
-            case T36: coords = T36_POSITIONS; break;
-            case T48: coords = T48_POSITIONS; break;
+            case MONO:           coords = MONO_POSITIONS; break;
+            case STEREO:         coords = STEREO_POSITIONS; break;
+            case QUAD:           coords = QUAD_POSITIONS; break;
+            case SURROUND_5_1:   coords = SURROUND_5_1_POSITIONS; break;
+            case SURROUND_7_1:   coords = SURROUND_7_1_POSITIONS; break;
+            case SURROUND_5_1_4: coords = SURROUND_5_1_4_POSITIONS; break;
+            case SURROUND_7_1_4: coords = SURROUND_7_1_4_POSITIONS; break;
+            case T4:             coords = T4_POSITIONS; break;
+            case T12:            coords = T12_POSITIONS; break;
+            case T24:            coords = T24_POSITIONS; break;
+            case T36:            coords = T36_POSITIONS; break;
+            case T48:            coords = T48_POSITIONS; break;
+            case ALLOSPHERE:     coords = ALLOSPHERE_POSITIONS; break;
         }
         
         if (coords) {
@@ -49,7 +65,7 @@ public:
     }
     
     /**
-     * @brief Get spherical coordinates for a T-design layout
+     * @brief Get spherical coordinates for a layout
      */
     static std::vector<std::pair<float, float>> getTDesignSphericalCoords(TDesignType type) {
         std::vector<std::pair<float, float>> coords;
@@ -58,11 +74,19 @@ public:
         int count = getSpeakerCount(type);
         
         switch (type) {
-            case T4:  positions = T4_POSITIONS;  break;
-            case T12: positions = T12_POSITIONS; break;
-            case T24: positions = T24_POSITIONS; break;
-            case T36: positions = T36_POSITIONS; break;
-            case T48: positions = T48_POSITIONS; break;
+            case MONO:           positions = MONO_POSITIONS; break;
+            case STEREO:         positions = STEREO_POSITIONS; break;
+            case QUAD:           positions = QUAD_POSITIONS; break;
+            case SURROUND_5_1:   positions = SURROUND_5_1_POSITIONS; break;
+            case SURROUND_7_1:   positions = SURROUND_7_1_POSITIONS; break;
+            case SURROUND_5_1_4: positions = SURROUND_5_1_4_POSITIONS; break;
+            case SURROUND_7_1_4: positions = SURROUND_7_1_4_POSITIONS; break;
+            case T4:             positions = T4_POSITIONS; break;
+            case T12:            positions = T12_POSITIONS; break;
+            case T24:            positions = T24_POSITIONS; break;
+            case T36:            positions = T36_POSITIONS; break;
+            case T48:            positions = T48_POSITIONS; break;
+            case ALLOSPHERE:     positions = ALLOSPHERE_POSITIONS; break;
         }
         
         if (positions) {
@@ -76,51 +100,86 @@ public:
     }
     
     /**
-     * @brief Get recommended ambisonic order for a T-design layout
+     * @brief Get recommended ambisonic order for a layout
      */
     static int getRecommendedOrder(TDesignType type) {
         return T_DESIGN_ORDERS[static_cast<int>(type)];
     }
     
     /**
-     * @brief Get the number of speakers for a T-design layout
+     * @brief Get the number of speakers for a layout
      */
     static int getSpeakerCount(TDesignType type) {
         return T_DESIGN_COUNTS[static_cast<int>(type)];
     }
     
     /**
-     * @brief Get human-readable name for a T-design layout
+     * @brief Get human-readable name for a layout
      */
     static std::string getTDesignName(TDesignType type) {
         return std::string(T_DESIGN_NAMES[static_cast<int>(type)]);
     }
     
     /**
-     * @brief Get all available T-design options as strings
+     * @brief Get all available layout options as strings
      */
     static std::vector<std::string> getAllTDesignNames() {
         std::vector<std::string> names;
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 13; i++) {
             names.emplace_back(T_DESIGN_NAMES[i]);
         }
         return names;
     }
     
 private:
-    // Helper function for coordinate conversion
-    static Vec3f sphericalToCartesian(float azimuthDeg, float elevationDeg, float radius) {
-        float azimuth_rad = azimuthDeg * M_PI / 180.0f;
-        float elevation_rad = elevationDeg * M_PI / 180.0f;
-        
-        float x = radius * cos(elevation_rad) * sin(azimuth_rad);
-        float y = radius * sin(elevation_rad);
-        float z = radius * cos(elevation_rad) * cos(azimuth_rad);
-        
-        return Vec3f(x, y, z);
-    }
+// Helper function for coordinate conversion
+static Vec3f sphericalToCartesian(float azimuthDeg, float elevationDeg, float radius) {
+    float azimuth_rad = azimuthDeg * M_PI / 180.0f;
+    float elevation_rad = elevationDeg * M_PI / 180.0f;
     
-    // Static arrays containing the actual speaker positions
+    float x = radius * cos(elevation_rad) * sin(azimuth_rad);
+    float y = radius * sin(elevation_rad);
+    float z = radius * cos(elevation_rad) * (-cos(azimuth_rad));  // Note the negative sign
+    
+    return Vec3f(x, y, z);
+}
+    
+    // Static arrays containing the actual speaker positions [azimuth, elevation]
+    
+    static constexpr float MONO_POSITIONS[][2] = {
+        {0.0f, 0.0f}
+    };
+    
+    static constexpr float STEREO_POSITIONS[][2] = {
+        {30.0f, 0.0f}, {-30.0f, 0.0f}
+    };
+    
+    static constexpr float QUAD_POSITIONS[][2] = {
+        {45.0f, 0.0f}, {-45.0f, 0.0f}, {135.0f, 0.0f}, {-135.0f, 0.0f}
+    };
+    
+    static constexpr float SURROUND_5_1_POSITIONS[][2] = {
+        {30.0f, 0.0f}, {-30.0f, 0.0f}, {0.0f, 0.0f}, 
+        {110.0f, 0.0f}, {-110.0f, 0.0f}
+    };
+    
+    static constexpr float SURROUND_7_1_POSITIONS[][2] = {
+        {30.0f, 0.0f}, {-30.0f, 0.0f}, {0.0f, 0.0f},
+        {90.0f, 0.0f}, {-90.0f, 0.0f}, {135.0f, 0.0f}, {-135.0f, 0.0f}
+    };
+    
+    static constexpr float SURROUND_5_1_4_POSITIONS[][2] = {
+        {30.0f, 0.0f}, {-30.0f, 0.0f}, {0.0f, 0.0f}, 
+        {110.0f, 0.0f}, {-110.0f, 0.0f},
+        {30.0f, 45.0f}, {-30.0f, 45.0f}, {110.0f, 45.0f}, {-110.0f, 45.0f}
+    };
+    
+    static constexpr float SURROUND_7_1_4_POSITIONS[][2] = {
+        {30.0f, 0.0f}, {-30.0f, 0.0f}, {0.0f, 0.0f},
+        {90.0f, 0.0f}, {-90.0f, 0.0f}, {135.0f, 0.0f}, {-135.0f, 0.0f},
+        {30.0f, 45.0f}, {-30.0f, 45.0f}, {110.0f, 45.0f}, {-110.0f, 45.0f}
+    };
+    
     static constexpr float T4_POSITIONS[][2] = {
         {45.000f, 35.264f}, {-45.000f, -35.264f},
         {135.000f, -35.264f}, {-135.000f, 35.264f}
@@ -169,9 +228,33 @@ private:
         {-25.259f, -44.979f}, {154.741f, -44.979f}, {64.741f, -44.979f}, {-115.259f, -44.979f}
     };
     
-    static constexpr int T_DESIGN_COUNTS[] = {4, 12, 24, 36, 48};
-    static constexpr int T_DESIGN_ORDERS[] = {1, 3, 5, 6, 7};
+    // UCSB Allosphere speaker layout - 54 speakers
+    static constexpr float ALLOSPHERE_POSITIONS[][2] = {
+        {-77.660913f, 41.000000f}, {-45.088015f, 41.000000f}, {-14.797289f, 41.000000f},
+        {14.797289f, 41.000000f}, {45.088015f, 41.000000f}, {77.660913f, 41.000000f},
+        {102.339087f, 41.000000f}, {134.911985f, 41.000000f}, {165.202711f, 41.000000f},
+        {-165.202711f, 41.000000f}, {-134.911985f, 41.000000f}, {-102.339087f, 41.000000f},
+        {-77.660913f, 0.000000f}, {-65.647587f, 0.000000f}, {-54.081600f, 0.000000f},
+        {-42.869831f, 0.000000f}, {-31.928167f, 0.000000f}, {-21.181024f, 0.000000f},
+        {-10.559657f, 0.000000f}, {0.000000f, 0.000000f}, {10.559657f, 0.000000f},
+        {21.181024f, 0.000000f}, {31.928167f, 0.000000f}, {42.869831f, 0.000000f},
+        {54.081600f, 0.000000f}, {65.647587f, 0.000000f}, {77.660913f, 0.000000f},
+        {102.339087f, 0.000000f}, {114.352413f, 0.000000f}, {125.918400f, 0.000000f},
+        {137.130169f, 0.000000f}, {148.071833f, 0.000000f}, {158.818976f, 0.000000f},
+        {169.440343f, 0.000000f}, {180.000000f, 0.000000f}, {-169.440343f, 0.000000f},
+        {-158.818976f, 0.000000f}, {-148.071833f, 0.000000f}, {-137.130169f, 0.000000f},
+        {-125.918400f, 0.000000f}, {-114.352413f, 0.000000f}, {-102.339087f, 0.000000f},
+        {-77.660913f, -32.500000f}, {-45.088015f, -32.500000f}, {-14.797289f, -32.500000f},
+        {14.797289f, -32.500000f}, {45.088015f, -32.500000f}, {77.660913f, -32.500000f},
+        {102.339087f, -32.500000f}, {134.911985f, -32.500000f}, {165.202711f, -32.500000f},
+        {-165.202711f, -32.500000f}, {-134.911985f, -32.500000f}, {-102.339087f, -32.500000f}
+    };
+    
+    static constexpr int T_DESIGN_COUNTS[] = {1, 2, 4, 5, 7, 9, 11, 4, 12, 24, 36, 48, 54};
+    static constexpr int T_DESIGN_ORDERS[] = {0, 1, 1, 2, 2, 3, 3, 1, 3, 5, 6, 7, 7};
     static constexpr const char* T_DESIGN_NAMES[] = {
-        "T-design (4)", "T-design (12)", "T-design (24)", "T-design (36)", "T-design (48)"
+        "Mono", "Stereo", "4.0", "5.1", "7.1", "5.1.4", "7.1.4",
+        "T-design (4)", "T-design (12)", "T-design (24)", "T-design (36)", "T-design (48)",
+        "Allosphere (54)"
     };
 };
