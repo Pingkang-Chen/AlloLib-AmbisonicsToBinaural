@@ -1,4 +1,4 @@
-<img width="1193" alt="Screenshot 2025-06-12 at 15 04 04" src="https://github.com/user-attachments/assets/bbe25282-11e0-4319-ad0e-ba0d406ae533" />
+<img width="1153" height="846" alt="Screenshot 2025-09-25 at 4 22 35 AM" src="https://github.com/user-attachments/assets/923e2047-771a-40e9-b53d-27009828e618" />
 
 What I will be adding next for this app:
 
