@@ -1,6 +1,6 @@
 <img width="1153" height="846" alt="Screenshot 2025-09-25 at 4 22 35 AM" src="https://github.com/user-attachments/assets/923e2047-771a-40e9-b53d-27009828e618" />
 
-What I will be adding next for this app:
+Currently under development:
 
 1: The speaker layout of AlloSphere (54.1) where I will need to implement distance simulation, and more immersive/surround sound speaker layouts (2.0, 4.0, 5.1, 7.1, 5.1.4, 7.1.4, etc.)
 
