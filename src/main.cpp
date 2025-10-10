@@ -37,6 +37,7 @@
 #include "audio/ambisonicEncoder.hpp"
 #include "audio/ambisonicBinauralDecoder.hpp"
 #include "audio/AmbisonicReverbProcessor.hpp"
+#include "headTrackingRotation.hpp"
 
 using namespace al;
 
@@ -533,6 +534,14 @@ struct MyApp : public App {
 
     std::unique_ptr<AmbisonicReverbProcessor> reverbProcessor;
     
+    // Head tracking and scene rotation
+    std::unique_ptr<HeadTrackingRotation> headTracker;
+    
+    // Visual head rotation state
+    float visualHeadYaw = 0.0f;
+    float visualHeadPitch = 0.0f;
+    float visualHeadRoll = 0.0f;
+    
     int selectedSourceId = -1;
     bool pickablesUpdatingParameters = false;
     Pose fixedListenerPose{Vec3f(0, 0, 0)};
@@ -781,20 +790,17 @@ void loadHeadphoneEQ(int eqIndex) {
     
     int irLength = static_cast<int>(reader->lengthInSamples);
     
-    // Load the stereo IR at its native sample rate (48kHz)
     juce::AudioBuffer<float> stereoIR(2, irLength);
     reader->read(&stereoIR, 0, irLength, 0, true, true);
     
-    // Split into separate L/R channels
     juce::AudioBuffer<float> irLeft(1, irLength);
     juce::AudioBuffer<float> irRight(1, irLength);
     irLeft.copyFrom(0, 0, stereoIR, 0, 0, irLength);
     irRight.copyFrom(0, 0, stereoIR, 1, 0, irLength);
     
-    // Let JUCE handle resampling from 48kHz to 44.1kHz internally
     headphoneEQ_L->loadImpulseResponse(
         std::move(irLeft), 
-        reader->sampleRate,  // Pass the actual IR sample rate (48000)
+        reader->sampleRate,
         juce::dsp::Convolution::Stereo::no,
         juce::dsp::Convolution::Trim::no,
         juce::dsp::Convolution::Normalise::no
@@ -802,7 +808,7 @@ void loadHeadphoneEQ(int eqIndex) {
     
     headphoneEQ_R->loadImpulseResponse(
         std::move(irRight), 
-        reader->sampleRate,  // JUCE resamples to 44100 automatically
+        reader->sampleRate,
         juce::dsp::Convolution::Stereo::no,
         juce::dsp::Convolution::Trim::no,
         juce::dsp::Convolution::Normalise::no
@@ -811,7 +817,6 @@ void loadHeadphoneEQ(int eqIndex) {
     currentHeadphoneEQIndex = eqIndex;
     std::cout << "Loaded headphone EQ: " << headphoneEQFilenames[eqIndex] << std::endl;
 }
-
     void onCreate() override {
         double sampleRate = audioIO().framesPerSecond();
         int frameSize = audioIO().framesPerBuffer();
@@ -819,6 +824,13 @@ void loadHeadphoneEQ(int eqIndex) {
         audioFormatManager.registerBasicFormats();
         
         sourceManager = std::make_unique<MultiSourceManager>(sampleRate);
+        
+        // Initialize head tracking
+        headTracker = std::make_unique<HeadTrackingRotation>(
+            SpeakerLayout::getRecommendedOrder(currentTDesign), 
+            9000  // OSC port
+        );
+        headTracker->initOSC();
         
         ambiEncoder = new AmbisonicEncoder(1, frameSize, sampleRate);
         ambiDecoder = new AmbisonicBinauralDecoder(1, sampleRate, frameSize, currentTDesign);
@@ -889,6 +901,13 @@ void loadHeadphoneEQ(int eqIndex) {
 
             reverbProcessor->updateTDesign(newTDesign);
             
+            // UPDATE HEAD TRACKER MAX ORDER
+            bool wasEnabled = headTracker->isEnabled();
+            int oscPort = headTracker->getOSCPort();
+            headTracker = std::make_unique<HeadTrackingRotation>(newOrder, oscPort);
+            headTracker->initOSC();
+            headTracker->setEnabled(wasEnabled);
+            
             sourceManager->updateSmoothingParameters(sampleRate);
             setupVirtualSpeakerPositions();
             
@@ -958,7 +977,16 @@ void loadHeadphoneEQ(int eqIndex) {
         if (headScene && !headMeshes.empty()) {
             g.pushMatrix();
             g.translate(0, 0, 0);
-            g.rotate(180, 0, 1, 0);
+            
+            // GET CURRENT HEAD ORIENTATION
+            headTracker->getOrientation(visualHeadYaw, visualHeadPitch, visualHeadRoll);
+            
+            // APPLY HEAD ROTATIONS (in correct order: Yaw -> Pitch -> Roll)
+            g.rotate(visualHeadYaw, 0, 1, 0);      // Yaw around Y-axis
+            g.rotate(visualHeadPitch, 1, 0, 0);    // Pitch around X-axis  
+            g.rotate(visualHeadRoll, 0, 0, 1);     // Roll around Z-axis
+            
+            g.rotate(180, 0, 1, 0);  // Base rotation to face forward
             
             float headScale = 0.5f;
             float maxDimension = std::max({
@@ -1231,54 +1259,85 @@ void loadHeadphoneEQ(int eqIndex) {
 
         ImGui::Separator();
 
+        // HEAD TRACKING GUI SECTION
         ImGui::Text("Head Tracking:");
 
-        static bool enableHeadTracking = false;
-        if (ImGui::Checkbox("Enable Head Tracking", &enableHeadTracking)) {
-            std::cout << "Head tracking " << (enableHeadTracking ? "enabled" : "disabled") << std::endl;
+        bool htEnabled = headTracker->isEnabled();
+        if (ImGui::Checkbox("Enable Head Tracking", &htEnabled)) {
+            headTracker->setEnabled(htEnabled);
         }
+        
+        // Only show connection status if connected AND received messages
+        if (headTracker->isOSCConnected() && headTracker->hasReceivedMessages()) {
+            ImGui::SameLine();
+            ImGui::TextColored(ImVec4(0, 1, 0, 1), "OSC Connected");
+        }
+        
 
+        
+        static int oscPort = 9000;
         ImGui::Text("OSC Port:");
         ImGui::SameLine();
-        static char oscPortBuffer[16] = "9000";
         ImGui::PushItemWidth(80);
-        if (ImGui::InputText("##oscport", oscPortBuffer, sizeof(oscPortBuffer))) {
-            std::cout << "OSC Port set to: " << oscPortBuffer << std::endl;
+        if (ImGui::InputInt("##oscport", &oscPort)) {
+            if (oscPort >= 1024 && oscPort <= 65535) {
+                headTracker->setOSCPort(oscPort);
+            }
         }
         ImGui::PopItemWidth();
-
+        
         ImGui::Text("Manual Control:");
-
+        
         static float yawValue = 0.0f;
         static float pitchValue = 0.0f;
         static float rollValue = 0.0f;
-
+        
+        // Get current values from head tracker
+        headTracker->getOrientation(yawValue, pitchValue, rollValue);
+        
         ImGui::Text("Yaw");
         ImGui::SameLine(100);
         ImGui::Text("Pitch");
         ImGui::SameLine(200);
         ImGui::Text("Roll");
-
+        
         ImGui::PushItemWidth(80);
         if (ImGui::SliderFloat("##yaw", &yawValue, -180.0f, 180.0f, "%.0f°")) {
-            std::cout << "Yaw: " << yawValue << "°" << std::endl;
+            headTracker->setOrientation(yawValue, pitchValue, rollValue);
         }
         ImGui::PopItemWidth();
-
+        
         ImGui::SameLine(100);
         ImGui::PushItemWidth(80);
         if (ImGui::SliderFloat("##pitch", &pitchValue, -90.0f, 90.0f, "%.0f°")) {
-            std::cout << "Pitch: " << pitchValue << "°" << std::endl;
+            headTracker->setOrientation(yawValue, pitchValue, rollValue);
         }
         ImGui::PopItemWidth();
-
+        
         ImGui::SameLine(200);
         ImGui::PushItemWidth(80);
         if (ImGui::SliderFloat("##roll", &rollValue, -180.0f, 180.0f, "%.0f°")) {
-            std::cout << "Roll: " << rollValue << "°" << std::endl;
+            headTracker->setOrientation(yawValue, pitchValue, rollValue);
         }
         ImGui::PopItemWidth();
+        
+        // Flip buttons
+        bool flipYaw = headTracker->getFlipYaw();
+        bool flipPitch = headTracker->getFlipPitch();
+        bool flipRoll = headTracker->getFlipRoll();
 
+        if (ImGui::Checkbox("+/-##yaw", &flipYaw)) {
+            headTracker->setFlipYaw(flipYaw);
+        }
+        ImGui::SameLine(100);
+        if (ImGui::Checkbox("+/-##pitch", &flipPitch)) {
+            headTracker->setFlipPitch(flipPitch);
+        }
+        ImGui::SameLine(200);
+        if (ImGui::Checkbox("+/-##roll", &flipRoll)) {
+            headTracker->setFlipRoll(flipRoll);
+        }
+        
         ImGui::Separator();
 
         ImGui::Text("HRTF Dataset:");
@@ -1303,9 +1362,8 @@ void loadHeadphoneEQ(int eqIndex) {
         if (ImGui::Button("Load SOFA File")) {
             std::cout << "Loading SOFA file: " << sofaFilePath << std::endl;
         }
-        
+
         ImGui::Separator();
-        
         ImGui::Text("Loaded Sources (%zu):", sourceManager->getSourceCount());
         
         const auto& sources = sourceManager->getSources();
@@ -1389,6 +1447,13 @@ void loadHeadphoneEQ(int eqIndex) {
         ImGui::Text("Sample Rate: %.0f Hz", audioIO().framesPerSecond());
         ImGui::Text("Buffer Size: %d samples", audioIO().framesPerBuffer());
         
+        // Head tracking status
+        if (headTracker->isEnabled()) {
+            float dispYaw, dispPitch, dispRoll;
+            headTracker->getOrientation(dispYaw, dispPitch, dispRoll);
+            ImGui::Text("Head: Yaw=%.1f° Pitch=%.1f° Roll=%.1f°", dispYaw, dispPitch, dispRoll);
+        }
+        
         ImGui::End();
         
         imguiEndFrame();
@@ -1418,6 +1483,13 @@ void loadHeadphoneEQ(int eqIndex) {
             
             if (shouldPlay) {
                 sourceManager->processAudio(ambiEncoder, nFrames);
+                
+                // APPLY HEAD TRACKING ROTATION TO AMBISONIC SOUNDFIELD
+                if (headTracker && headTracker->isEnabled()) {
+                    int currentOrder = SpeakerLayout::getRecommendedOrder(currentTDesign);
+                    headTracker->rotateAmbisonics(ambiEncoder->ambiSignals, nFrames, currentOrder);
+                }
+                
                 ambiDecoder->decodeWithReverb(ambiEncoder->ambiSignals, leftOutputBuffer, rightOutputBuffer, nFrames, reverbProcessor.get());
                 
                 if (currentHeadphoneEQIndex > 0 && headphoneEQ_L && headphoneEQ_R) {
@@ -1466,7 +1538,7 @@ void loadHeadphoneEQ(int eqIndex) {
         return true;
     }
    
-bool onMouseDown(const Mouse &m) override {
+    bool onMouseDown(const Mouse &m) override {
         if (gui.usingInput()) return true;
         pickableManager.onMouseDown(graphics(), m, width(), height());
        
