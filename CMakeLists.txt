@@ -79,6 +79,9 @@ set(SAF_BUILD_EXAMPLES 0 CACHE BOOL "Don't build SAF examples")
 # Add SAF as a subdirectory
 add_subdirectory(Spatial_Audio_Framework)
 
+# ADD THIS LINE - Native File Dialog Extended
+add_subdirectory(nfd)
+
 # Link against SAF
 target_link_libraries(${APP_NAME} PRIVATE saf)
 
@@ -96,6 +99,8 @@ target_include_directories(${APP_NAME} PRIVATE
 
 # Link our JUCE convolution library (using the working approach)
 target_link_libraries(${APP_NAME} PRIVATE juce_convolution_lib)
+
+target_link_libraries(${APP_NAME} PRIVATE nfd)
 
 # add al_ext to project & link if it exists
 if (EXISTS ${CMAKE_CURRENT_LIST_DIR}/al_ext)

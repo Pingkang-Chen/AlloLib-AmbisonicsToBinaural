@@ -10,3 +10,6 @@
 [submodule "JUCE"]
 	path = JUCE
 	url = https://github.com/juce-framework/JUCE.git
+[submodule "nfd"]
+	path = nfd
+	url = https://github.com/btzy/nativefiledialog-extended.git

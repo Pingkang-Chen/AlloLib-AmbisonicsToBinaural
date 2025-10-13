@@ -32,6 +32,9 @@
 #include "juce_dsp/juce_dsp.h"
 #include "juce_audio_formats/juce_audio_formats.h"
 
+// Native File Dialog Extended
+#include <nfd.h>
+
 // Our modular components
 #include "audio/speakerLayout.hpp"
 #include "audio/ambisonicEncoder.hpp"
@@ -669,51 +672,54 @@ struct MyApp : public App {
                   << " with " << virtualSpeakerPositions.size() << " speakers" << std::endl;
     }
 
-    void loadSingleAudioFileFromPath(const std::string& filepath) {
-        if (!filepath.empty()) {
-            int sourceId = sourceManager->addAudioFile(filepath);
-            if (sourceId >= 0) {
-                createPickableForSource(sourceId);
-                std::cout << "Successfully loaded single file: " << filepath << std::endl;
-            }
-        }
-    }
+    // NEW: Open native file dialog and load selected files
+// NEW: Open native file dialog and load selected files
+// NEW: Open native file dialog and load selected files
+// NEW: Open native file dialog and load selected files (with multiple selection support)
+void openFileDialogAndLoadAudio() {
+    const nfdpathset_t *outPaths = nullptr;
+    nfdfilteritem_t filterItem[1] = { { "Audio Files", "wav,mp3,flac,ogg,aif,aiff,m4a" } };
+    nfdresult_t result = NFD_OpenDialogMultiple(&outPaths, filterItem, 1, nullptr);
     
-    void loadMultipleAudioFilesFromPaths(const std::string& pathsString) {
-        if (pathsString.empty()) return;
+    if (result == NFD_OKAY) {
+        nfdpathsetsize_t numPaths;
+        NFD_PathSet_GetCount(outPaths, &numPaths);
         
-        std::vector<std::string> filepaths;
-        std::stringstream ss(pathsString);
-        std::string filepath;
+        std::vector<std::string> selectedFiles;
+        std::cout << "User selected " << numPaths << " file(s)" << std::endl;
         
-        while (std::getline(ss, filepath, '\n')) {
-            filepath.erase(0, filepath.find_first_not_of(" \t\r"));
-            filepath.erase(filepath.find_last_not_of(" \t\r") + 1);
-            
-            if (!filepath.empty()) {
-                filepaths.push_back(filepath);
+        for (nfdpathsetsize_t i = 0; i < numPaths; i++) {
+            nfdchar_t *path = nullptr;
+            NFD_PathSet_GetPath(outPaths, i, &path);
+            if (path) {
+                selectedFiles.push_back(std::string(path));
+                std::cout << "  File " << i << ": " << path << std::endl;
+                NFD_PathSet_FreePath(path);
             }
         }
         
-        if (!filepaths.empty()) {
-            std::cout << "Loading " << filepaths.size() << " files..." << std::endl;
-            
+        // Load all selected files
+        if (!selectedFiles.empty()) {
             int loadedCount = 0;
-            for (const auto& path : filepaths) {
-                int sourceId = sourceManager->addAudioFile(path);
+            for (const auto& filePath : selectedFiles) {
+                int sourceId = sourceManager->addAudioFile(filePath);
                 if (sourceId >= 0) {
                     createPickableForSource(sourceId);
                     loadedCount++;
-                    
-                    if (loadedCount % 5 == 0) {
-                        std::cout << "Loaded " << loadedCount << "/" << filepaths.size() << " files..." << std::endl;
-                    }
                 }
             }
-            
-            std::cout << "Successfully loaded " << loadedCount << " out of " << filepaths.size() << " files" << std::endl;
+            std::cout << "Successfully loaded " << loadedCount << " out of " 
+                      << selectedFiles.size() << " file(s)" << std::endl;
         }
+        
+        NFD_PathSet_Free(outPaths);
+        
+    } else if (result == NFD_CANCEL) {
+        std::cout << "User cancelled file selection" << std::endl;
+    } else {
+        std::cerr << "Error opening file dialog: " << NFD_GetError() << std::endl;
     }
+}
     
     void createPickableForSource(int sourceId) {
         AudioSource* source = sourceManager->getSource(sourceId);
@@ -754,74 +760,78 @@ struct MyApp : public App {
         std::cout << "Removed source " << sourceId << std::endl;
     }
 
-void loadHeadphoneEQ(int eqIndex) {
-    if (eqIndex == 0) {
-        currentHeadphoneEQIndex = 0;
-        std::cout << "Headphone EQ: OFF" << std::endl;
-        return;
+    void loadHeadphoneEQ(int eqIndex) {
+        if (eqIndex == 0) {
+            currentHeadphoneEQIndex = 0;
+            std::cout << "Headphone EQ: OFF" << std::endl;
+            return;
+        }
+        
+        const char* headphoneEQFilenames[] = {
+            "",
+            "AKG-K141MK2", "AKG-K240DF", "AKG-K240MK2", "AKG-K271MK2",
+            "AKG-K271STUDIO", "AKG-K601", "AKG-K701", "AKG-K702",
+            "AKG-K1000-Closed", "AKG-K1000-Open", "AudioTechnica-ATH-M50",
+            "Beyerdynamic-DT250", "Beyerdynamic-DT770PRO-250Ohms",
+            "Beyerdynamic-DT880", "Beyerdynamic-DT990PRO", "Presonus-HD7",
+            "Sennheiser-HD430", "Sennheiser-HD480", "Sennheiser-HD560ovationII",
+            "Sennheiser-HD565ovation", "Sennheiser-HD600", "Sennheiser-HD650",
+            "SHURE-SRH940"
+        };
+        
+        std::string filename = std::string(headphoneEQFilenames[eqIndex]) + ".wav";
+        std::string filepath = "../assets/Headphone_EQ/" + filename;
+        
+        juce::File eqFile(filepath);
+        if (!eqFile.exists()) {
+            std::cerr << "Headphone EQ file not found: " << filepath << std::endl;
+            return;
+        }
+        
+        std::unique_ptr<juce::AudioFormatReader> reader(audioFormatManager.createReaderFor(eqFile));
+        if (!reader || reader->numChannels != 2) {
+            std::cerr << "Invalid headphone EQ file" << std::endl;
+            return;
+        }
+        
+        int irLength = static_cast<int>(reader->lengthInSamples);
+        
+        juce::AudioBuffer<float> stereoIR(2, irLength);
+        reader->read(&stereoIR, 0, irLength, 0, true, true);
+        
+        juce::AudioBuffer<float> irLeft(1, irLength);
+        juce::AudioBuffer<float> irRight(1, irLength);
+        irLeft.copyFrom(0, 0, stereoIR, 0, 0, irLength);
+        irRight.copyFrom(0, 0, stereoIR, 1, 0, irLength);
+        
+        headphoneEQ_L->loadImpulseResponse(
+            std::move(irLeft), 
+            reader->sampleRate,
+            juce::dsp::Convolution::Stereo::no,
+            juce::dsp::Convolution::Trim::no,
+            juce::dsp::Convolution::Normalise::no
+        );
+        
+        headphoneEQ_R->loadImpulseResponse(
+            std::move(irRight), 
+            reader->sampleRate,
+            juce::dsp::Convolution::Stereo::no,
+            juce::dsp::Convolution::Trim::no,
+            juce::dsp::Convolution::Normalise::no
+        );
+        
+        currentHeadphoneEQIndex = eqIndex;
+        std::cout << "Loaded headphone EQ: " << headphoneEQFilenames[eqIndex] << std::endl;
     }
     
-    const char* headphoneEQFilenames[] = {
-        "",
-        "AKG-K141MK2", "AKG-K240DF", "AKG-K240MK2", "AKG-K271MK2",
-        "AKG-K271STUDIO", "AKG-K601", "AKG-K701", "AKG-K702",
-        "AKG-K1000-Closed", "AKG-K1000-Open", "AudioTechnica-ATH-M50",
-        "Beyerdynamic-DT250", "Beyerdynamic-DT770PRO-250Ohms",
-        "Beyerdynamic-DT880", "Beyerdynamic-DT990PRO", "Presonus-HD7",
-        "Sennheiser-HD430", "Sennheiser-HD480", "Sennheiser-HD560ovationII",
-        "Sennheiser-HD565ovation", "Sennheiser-HD600", "Sennheiser-HD650",
-        "SHURE-SRH940"
-    };
-    
-    std::string filename = std::string(headphoneEQFilenames[eqIndex]) + ".wav";
-    std::string filepath = "../assets/Headphone_EQ/" + filename;
-    
-    juce::File eqFile(filepath);
-    if (!eqFile.exists()) {
-        std::cerr << "Headphone EQ file not found: " << filepath << std::endl;
-        return;
-    }
-    
-    std::unique_ptr<juce::AudioFormatReader> reader(audioFormatManager.createReaderFor(eqFile));
-    if (!reader || reader->numChannels != 2) {
-        std::cerr << "Invalid headphone EQ file" << std::endl;
-        return;
-    }
-    
-    int irLength = static_cast<int>(reader->lengthInSamples);
-    
-    juce::AudioBuffer<float> stereoIR(2, irLength);
-    reader->read(&stereoIR, 0, irLength, 0, true, true);
-    
-    juce::AudioBuffer<float> irLeft(1, irLength);
-    juce::AudioBuffer<float> irRight(1, irLength);
-    irLeft.copyFrom(0, 0, stereoIR, 0, 0, irLength);
-    irRight.copyFrom(0, 0, stereoIR, 1, 0, irLength);
-    
-    headphoneEQ_L->loadImpulseResponse(
-        std::move(irLeft), 
-        reader->sampleRate,
-        juce::dsp::Convolution::Stereo::no,
-        juce::dsp::Convolution::Trim::no,
-        juce::dsp::Convolution::Normalise::no
-    );
-    
-    headphoneEQ_R->loadImpulseResponse(
-        std::move(irRight), 
-        reader->sampleRate,
-        juce::dsp::Convolution::Stereo::no,
-        juce::dsp::Convolution::Trim::no,
-        juce::dsp::Convolution::Normalise::no
-    );
-    
-    currentHeadphoneEQIndex = eqIndex;
-    std::cout << "Loaded headphone EQ: " << headphoneEQFilenames[eqIndex] << std::endl;
-}
     void onCreate() override {
         double sampleRate = audioIO().framesPerSecond();
         int frameSize = audioIO().framesPerBuffer();
         
         audioFormatManager.registerBasicFormats();
+        
+        // Initialize NFD
+        NFD_Init();
         
         sourceManager = std::make_unique<MultiSourceManager>(sampleRate);
         
@@ -870,7 +880,7 @@ void loadHeadphoneEQ(int eqIndex) {
         nav().faceToward(Vec3d(0, 0, 0), Vec3d(0, 1, 0));
        
         std::cout << "Multi-Source Ambisonics-to-Binaural Renderer:" << std::endl;
-        std::cout << "  1. Enter file paths in the GUI text fields" << std::endl;
+        std::cout << "  1. Click 'Load Audio Files' to browse for audio files" << std::endl;
         std::cout << "  2. Click and drag sound sources to move them" << std::endl;
         std::cout << "  3. Use play/pause controls for synchronized playback" << std::endl;
         std::cout << "  4. Select different T-design layouts for quality/performance balance" << std::endl;
@@ -1118,28 +1128,15 @@ void loadHeadphoneEQ(int eqIndex) {
         imguiBeginFrame();
         ImGui::Begin("Multi-Source Audio Control");
 
-        ImGui::Text("Audio File Paths:");
-        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "(Enter one or more paths,");
-        ImGui::SameLine(0, 0);
-        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), " one per line)");
-
-        static char filePathsBuffer[2048] = "";
-        if (ImGui::InputTextMultiline("##filepaths", filePathsBuffer, sizeof(filePathsBuffer), 
-            ImVec2(400, 100), ImGuiInputTextFlags_EnterReturnsTrue)) {
-            std::string pathsString(filePathsBuffer);
-            if (!pathsString.empty()) {
-                loadMultipleAudioFilesFromPaths(pathsString);
-                memset(filePathsBuffer, 0, sizeof(filePathsBuffer));
-            }
+        // MODIFIED: Simplified UI with file browser button
+        ImGui::Text("Audio File Loading:");
+        
+        if (ImGui::Button("Load Audio Files", ImVec2(200, 30))) {
+            openFileDialogAndLoadAudio();
         }
-
-        if (ImGui::Button("Load Audio Files")) {
-            std::string pathsString(filePathsBuffer);
-            if (!pathsString.empty()) {
-                loadMultipleAudioFilesFromPaths(pathsString);
-                memset(filePathsBuffer, 0, sizeof(filePathsBuffer));
-            }
-        }
+        
+        ImGui::SameLine();
+        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "(Click to browse for files)");
         
         ImGui::Separator();
         
@@ -1272,8 +1269,6 @@ void loadHeadphoneEQ(int eqIndex) {
             ImGui::SameLine();
             ImGui::TextColored(ImVec4(0, 1, 0, 1), "OSC Connected");
         }
-        
-
         
         static int oscPort = 9000;
         ImGui::Text("OSC Port:");
@@ -1511,6 +1506,7 @@ void loadHeadphoneEQ(int eqIndex) {
     }
 
     void onExit() override {
+        NFD_Quit();
         delete ambiEncoder;
         delete ambiDecoder;
         delete[] leftOutputBuffer;
