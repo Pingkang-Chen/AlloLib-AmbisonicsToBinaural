@@ -1,0 +1,2 @@
+/usr/bin/ar qc libjuce_convolution_lib.a CMakeFiles/juce_convolution_lib.dir/JUCE/modules/juce_core/juce_core_CompilationTime.cpp.o CMakeFiles/juce_convolution_lib.dir/JUCE/modules/juce_core/juce_core.mm.o CMakeFiles/juce_convolution_lib.dir/JUCE/modules/juce_audio_basics/juce_audio_basics.mm.o CMakeFiles/juce_convolution_lib.dir/JUCE/modules/juce_dsp/juce_dsp.mm.o CMakeFiles/juce_convolution_lib.dir/JUCE/modules/juce_audio_formats/juce_audio_formats.mm.o
+/usr/bin/ranlib libjuce_convolution_lib.a

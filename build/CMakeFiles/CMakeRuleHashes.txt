@@ -1,0 +1,4 @@
+# Hashes of file build rules.
+3b07e8cf0edd774ed62709110e62b239 allolib/external/glfw/src/CMakeFiles/update_mappings
+485e0556e1d1c44b394fccfe85470d48 allolib/external/rtaudio/CMakeFiles/RTAUDIO_UNINSTALL
+ffdc2bb6669eb3049f5a0363b27dd6d4 allolib/external/rtmidi/CMakeFiles/RTMIDI_UNINSTALL

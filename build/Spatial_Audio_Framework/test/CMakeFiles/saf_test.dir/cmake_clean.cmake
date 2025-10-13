@@ -1,0 +1,41 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/saf_test.dir/src/resources/timer.c.o"
+  "CMakeFiles/saf_test.dir/src/resources/timer.c.o.d"
+  "CMakeFiles/saf_test.dir/src/resources/unity.c.o"
+  "CMakeFiles/saf_test.dir/src/resources/unity.c.o.d"
+  "CMakeFiles/saf_test.dir/src/saf_test.c.o"
+  "CMakeFiles/saf_test.dir/src/saf_test.c.o.d"
+  "CMakeFiles/saf_test.dir/src/saf_test_wrapper.cpp.o"
+  "CMakeFiles/saf_test.dir/src/saf_test_wrapper.cpp.o.d"
+  "CMakeFiles/saf_test.dir/src/test__cdf4sap_module.c.o"
+  "CMakeFiles/saf_test.dir/src/test__cdf4sap_module.c.o.d"
+  "CMakeFiles/saf_test.dir/src/test__examples.c.o"
+  "CMakeFiles/saf_test.dir/src/test__examples.c.o.d"
+  "CMakeFiles/saf_test.dir/src/test__hades_module.c.o"
+  "CMakeFiles/saf_test.dir/src/test__hades_module.c.o.d"
+  "CMakeFiles/saf_test.dir/src/test__hoa_module.c.o"
+  "CMakeFiles/saf_test.dir/src/test__hoa_module.c.o.d"
+  "CMakeFiles/saf_test.dir/src/test__hrir_module.c.o"
+  "CMakeFiles/saf_test.dir/src/test__hrir_module.c.o.d"
+  "CMakeFiles/saf_test.dir/src/test__resources.c.o"
+  "CMakeFiles/saf_test.dir/src/test__resources.c.o.d"
+  "CMakeFiles/saf_test.dir/src/test__reverb_module.c.o"
+  "CMakeFiles/saf_test.dir/src/test__reverb_module.c.o.d"
+  "CMakeFiles/saf_test.dir/src/test__sh_module.c.o"
+  "CMakeFiles/saf_test.dir/src/test__sh_module.c.o.d"
+  "CMakeFiles/saf_test.dir/src/test__sofa_reader_module.c.o"
+  "CMakeFiles/saf_test.dir/src/test__sofa_reader_module.c.o.d"
+  "CMakeFiles/saf_test.dir/src/test__tracker_module.c.o"
+  "CMakeFiles/saf_test.dir/src/test__tracker_module.c.o.d"
+  "CMakeFiles/saf_test.dir/src/test__utilities_module.c.o"
+  "CMakeFiles/saf_test.dir/src/test__utilities_module.c.o.d"
+  "CMakeFiles/saf_test.dir/src/test__vbap_module.c.o"
+  "CMakeFiles/saf_test.dir/src/test__vbap_module.c.o.d"
+  "saf_test"
+  "saf_test.pdb"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang C CXX)
+  include(CMakeFiles/saf_test.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

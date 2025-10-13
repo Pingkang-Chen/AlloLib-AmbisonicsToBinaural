@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -std=c++11 -Wno-deprecated-declarations -O4 -DNDEBUG -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/test_taker_app.dir/test/taker_app.cpp.o -o test_taker_app  libcuttlebone.dylib -framework CoreServices

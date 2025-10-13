@@ -1,0 +1,38 @@
+{
+	"InstallScripts" : 
+	[
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/JUCE/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/JUCE/modules/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/JUCE/extras/Build/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/JUCE/extras/Build/juceaide/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/allolib/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/allolib/external/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/allolib/external/Gamma/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/allolib/external/glfw/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/allolib/external/glfw/src/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/allolib/external/glad/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/allolib/external/rtaudio/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/allolib/external/rtmidi/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/allolib/external/cpptoml/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/allolib/external/json/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/allolib/external/stb/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/allolib/external/dr_libs/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework/modules/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework/resources/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/test/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/nfd/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/nfd/src/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/al_ext/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/al_ext/assets3d/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/al_ext/openvr/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/al_ext/soundfile/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/al_ext/spatialaudio/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/al_ext/statedistribution/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/al_ext/statedistribution/cuttlebone/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

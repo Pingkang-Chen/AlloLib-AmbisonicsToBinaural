@@ -1,0 +1,2 @@
+/usr/bin/ar qc libserial.a CMakeFiles/serial.dir/serial/src/serial.cc.o CMakeFiles/serial.dir/serial/src/impl/unix.cc.o CMakeFiles/serial.dir/serial/src/impl/list_ports/list_ports_osx.cc.o
+/usr/bin/ranlib libserial.a

@@ -1,0 +1,2 @@
+/usr/bin/ar qc liboscpack.a CMakeFiles/oscpack.dir/oscpack/ip/IpEndpointName.cpp.o CMakeFiles/oscpack.dir/oscpack/ip/posix/NetworkingUtils.cpp.o CMakeFiles/oscpack.dir/oscpack/ip/posix/UdpSocket.cpp.o CMakeFiles/oscpack.dir/oscpack/osc/OscTypes.cpp.o CMakeFiles/oscpack.dir/oscpack/osc/OscReceivedElements.cpp.o CMakeFiles/oscpack.dir/oscpack/osc/OscPrintReceivedElements.cpp.o CMakeFiles/oscpack.dir/oscpack/osc/OscOutboundPacketStream.cpp.o
+/usr/bin/ranlib liboscpack.a

@@ -1,0 +1,2 @@
+/usr/bin/ar qc libal_assets3d.a CMakeFiles/al_assets3d.dir/src/al_Asset.cpp.o
+/usr/bin/ranlib libal_assets3d.a

@@ -1,0 +1,10 @@
+{
+	"InstallScripts" : 
+	[
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/JUCE/tools/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/JUCE/tools/modules/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/JUCE/tools/extras/Build/cmake_install.cmake",
+		"/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/JUCE/tools/extras/Build/juceaide/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

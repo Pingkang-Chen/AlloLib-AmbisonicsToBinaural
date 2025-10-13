@@ -1,0 +1,2 @@
+/usr/bin/ar qc libal_openvr.a CMakeFiles/al_openvr.dir/src/al_OpenVRWrapper.cpp.o CMakeFiles/al_openvr.dir/src/al_OpenVRDomain.cpp.o
+/usr/bin/ranlib libal_openvr.a

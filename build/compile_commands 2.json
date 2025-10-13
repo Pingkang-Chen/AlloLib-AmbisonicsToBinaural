@@ -1,0 +1,422 @@
+[
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_cdf4sap/saf_cdf4sap.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_cdf4sap/saf_cdf4sap.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_cdf4sap/saf_cdf4sap.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_cdf4sap/saf_cdf4sap.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_hoa/saf_hoa_internal.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_hoa/saf_hoa_internal.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_hoa/saf_hoa_internal.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_hoa/saf_hoa_internal.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_hoa/saf_hoa.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_hoa/saf_hoa.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_hoa/saf_hoa.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_hoa/saf_hoa.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_hrir/saf_default_hrirs.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_hrir/saf_default_hrirs.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_hrir/saf_default_hrirs.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_hrir/saf_default_hrirs.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_hrir/saf_hrir.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_hrir/saf_hrir.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_hrir/saf_hrir.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_hrir/saf_hrir.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_reverb/saf_reverb_internal.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_reverb/saf_reverb_internal.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_reverb/saf_reverb_internal.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_reverb/saf_reverb_internal.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_reverb/saf_reverb.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_reverb/saf_reverb.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_reverb/saf_reverb.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_reverb/saf_reverb.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_sh/saf_sh_internal.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_sh/saf_sh_internal.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_sh/saf_sh_internal.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_sh/saf_sh_internal.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_sh/saf_sh.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_sh/saf_sh.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_sh/saf_sh.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_sh/saf_sh.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_tracker/saf_tracker_internal.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_tracker/saf_tracker_internal.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_tracker/saf_tracker_internal.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_tracker/saf_tracker_internal.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_tracker/saf_tracker.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_tracker/saf_tracker.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_tracker/saf_tracker.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_tracker/saf_tracker.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_bessel.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_bessel.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_bessel.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_bessel.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_complex.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_complex.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_complex.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_complex.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_decor.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_decor.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_decor.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_decor.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_fft.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_fft.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_fft.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_fft.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_filters.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_filters.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_filters.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_filters.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_geometry.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_geometry.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_geometry.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_geometry.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_latticeCoeffs.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_latticeCoeffs.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_latticeCoeffs.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_latticeCoeffs.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_loudspeaker_presets.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_loudspeaker_presets.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_loudspeaker_presets.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_loudspeaker_presets.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_matrixConv.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_matrixConv.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_matrixConv.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_matrixConv.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_misc.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_misc.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_misc.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_misc.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_pitch.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_pitch.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_pitch.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_pitch.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_qmf.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_qmf.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_qmf.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_qmf.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_sensorarray_presets.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_sensorarray_presets.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_sensorarray_presets.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_sensorarray_presets.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_sort.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_sort.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_sort.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_sort.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_veclib.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_veclib.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_veclib.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_veclib.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_dvf.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_dvf.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_dvf.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_utilities/saf_utility_dvf.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_vbap/saf_vbap_internal.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_vbap/saf_vbap_internal.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_vbap/saf_vbap_internal.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_vbap/saf_vbap_internal.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_vbap/saf_vbap.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_vbap/saf_vbap.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_vbap/saf_vbap.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_vbap/saf_vbap.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_sofa_reader/saf_sofa_reader.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/saf_sofa_reader.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/saf_sofa_reader.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_sofa_reader/saf_sofa_reader.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_sofa_reader/libmysofa/mysofa.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/mysofa.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/mysofa.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_sofa_reader/libmysofa/mysofa.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_sofa_reader/libmysofa/internal/hdf_dataobject.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/hdf_dataobject.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/hdf_dataobject.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_sofa_reader/libmysofa/internal/hdf_dataobject.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_sofa_reader/libmysofa/internal/hdf_fractalhead.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/hdf_fractalhead.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/hdf_fractalhead.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_sofa_reader/libmysofa/internal/hdf_fractalhead.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_sofa_reader/libmysofa/internal/hdf_reader.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/hdf_reader.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/hdf_reader.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_sofa_reader/libmysofa/internal/hdf_reader.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_sofa_reader/libmysofa/internal/kdtree.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/kdtree.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/kdtree.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_sofa_reader/libmysofa/internal/kdtree.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/modules/saf_sofa_reader/libmysofa/internal/mysofa_internal.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/mysofa_internal.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/mysofa_internal.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/modules/saf_sofa_reader/libmysofa/internal/mysofa_internal.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/resources/afSTFT/afSTFTlib.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/afSTFT/afSTFTlib.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/afSTFT/afSTFTlib.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/resources/afSTFT/afSTFTlib.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/resources/afSTFT/afSTFT_internal.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/afSTFT/afSTFT_internal.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/afSTFT/afSTFT_internal.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/resources/afSTFT/afSTFT_internal.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/resources/convhull_3d/convhull_3d.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/convhull_3d/convhull_3d.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/convhull_3d/convhull_3d.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/resources/convhull_3d/convhull_3d.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/resources/kissFFT/kiss_fft.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/kissFFT/kiss_fft.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/kissFFT/kiss_fft.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/resources/kissFFT/kiss_fft.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/resources/kissFFT/kiss_fftr.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/kissFFT/kiss_fftr.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/kissFFT/kiss_fftr.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/resources/kissFFT/kiss_fftr.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/resources/md_malloc/md_malloc.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/md_malloc/md_malloc.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/md_malloc/md_malloc.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/resources/md_malloc/md_malloc.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/resources/speex_resampler/resample.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/speex_resampler/resample.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/speex_resampler/resample.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/resources/speex_resampler/resample.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/resources/zlib/adler32.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/zlib/adler32.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/zlib/adler32.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/resources/zlib/adler32.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/resources/zlib/compress.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/zlib/compress.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/zlib/compress.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/resources/zlib/compress.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/resources/zlib/crc32.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/zlib/crc32.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/zlib/crc32.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/resources/zlib/crc32.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/resources/zlib/deflate.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/zlib/deflate.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/zlib/deflate.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/resources/zlib/deflate.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/resources/zlib/infback.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/zlib/infback.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/zlib/infback.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/resources/zlib/infback.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/resources/zlib/inffast.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/zlib/inffast.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/zlib/inffast.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/resources/zlib/inffast.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/resources/zlib/inflate.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/zlib/inflate.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/zlib/inflate.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/resources/zlib/inflate.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/resources/zlib/inftrees.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/zlib/inftrees.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/zlib/inftrees.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/resources/zlib/inftrees.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/resources/zlib/trees.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/zlib/trees.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/zlib/trees.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/resources/zlib/trees.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/resources/zlib/uncompr.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/zlib/uncompr.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/zlib/uncompr.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/resources/zlib/uncompr.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/framework",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -Wextra -o CMakeFiles/saf.dir/resources/zlib/zutil.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/zlib/zutil.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/resources/zlib/zutil.c",
+  "output": "Spatial_Audio_Framework/framework/CMakeFiles/saf.dir/resources/zlib/zutil.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/test",
+  "command": "/usr/bin/c++ -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/include -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include  -std=c++11 -stdlib=libc++ -O3 -DNDEBUG -std=c++14 -arch arm64 -fPIE -o CMakeFiles/saf_test.dir/src/saf_test_wrapper.cpp.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/saf_test_wrapper.cpp",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/saf_test_wrapper.cpp",
+  "output": "Spatial_Audio_Framework/test/CMakeFiles/saf_test.dir/src/saf_test_wrapper.cpp.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/test",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/include -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIE -o CMakeFiles/saf_test.dir/src/saf_test.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/saf_test.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/saf_test.c",
+  "output": "Spatial_Audio_Framework/test/CMakeFiles/saf_test.dir/src/saf_test.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/test",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/include -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIE -o CMakeFiles/saf_test.dir/src/resources/timer.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/resources/timer.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/resources/timer.c",
+  "output": "Spatial_Audio_Framework/test/CMakeFiles/saf_test.dir/src/resources/timer.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/test",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/include -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIE -o CMakeFiles/saf_test.dir/src/resources/unity.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/resources/unity.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/resources/unity.c",
+  "output": "Spatial_Audio_Framework/test/CMakeFiles/saf_test.dir/src/resources/unity.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/test",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/include -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIE -o CMakeFiles/saf_test.dir/src/test__vbap_module.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/test__vbap_module.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/test__vbap_module.c",
+  "output": "Spatial_Audio_Framework/test/CMakeFiles/saf_test.dir/src/test__vbap_module.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/test",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/include -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIE -o CMakeFiles/saf_test.dir/src/test__cdf4sap_module.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/test__cdf4sap_module.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/test__cdf4sap_module.c",
+  "output": "Spatial_Audio_Framework/test/CMakeFiles/saf_test.dir/src/test__cdf4sap_module.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/test",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/include -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIE -o CMakeFiles/saf_test.dir/src/test__examples.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/test__examples.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/test__examples.c",
+  "output": "Spatial_Audio_Framework/test/CMakeFiles/saf_test.dir/src/test__examples.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/test",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/include -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIE -o CMakeFiles/saf_test.dir/src/test__hades_module.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/test__hades_module.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/test__hades_module.c",
+  "output": "Spatial_Audio_Framework/test/CMakeFiles/saf_test.dir/src/test__hades_module.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/test",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/include -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIE -o CMakeFiles/saf_test.dir/src/test__hoa_module.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/test__hoa_module.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/test__hoa_module.c",
+  "output": "Spatial_Audio_Framework/test/CMakeFiles/saf_test.dir/src/test__hoa_module.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/test",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/include -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIE -o CMakeFiles/saf_test.dir/src/test__hrir_module.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/test__hrir_module.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/test__hrir_module.c",
+  "output": "Spatial_Audio_Framework/test/CMakeFiles/saf_test.dir/src/test__hrir_module.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/test",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/include -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIE -o CMakeFiles/saf_test.dir/src/test__resources.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/test__resources.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/test__resources.c",
+  "output": "Spatial_Audio_Framework/test/CMakeFiles/saf_test.dir/src/test__resources.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/test",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/include -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIE -o CMakeFiles/saf_test.dir/src/test__reverb_module.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/test__reverb_module.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/test__reverb_module.c",
+  "output": "Spatial_Audio_Framework/test/CMakeFiles/saf_test.dir/src/test__reverb_module.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/test",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/include -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIE -o CMakeFiles/saf_test.dir/src/test__sh_module.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/test__sh_module.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/test__sh_module.c",
+  "output": "Spatial_Audio_Framework/test/CMakeFiles/saf_test.dir/src/test__sh_module.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/test",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/include -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIE -o CMakeFiles/saf_test.dir/src/test__sofa_reader_module.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/test__sofa_reader_module.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/test__sofa_reader_module.c",
+  "output": "Spatial_Audio_Framework/test/CMakeFiles/saf_test.dir/src/test__sofa_reader_module.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/test",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/include -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIE -o CMakeFiles/saf_test.dir/src/test__tracker_module.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/test__tracker_module.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/test__tracker_module.c",
+  "output": "Spatial_Audio_Framework/test/CMakeFiles/saf_test.dir/src/test__tracker_module.c.o"
+},
+{
+  "directory": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/build/Spatial_Audio_Framework/test",
+  "command": "/usr/bin/cc -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_USE_APPLE_ACCELERATE=1 -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/include -I/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/framework/include -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIE -o CMakeFiles/saf_test.dir/src/test__utilities_module.c.o -c /Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/test__utilities_module.c",
+  "file": "/Users/pingkangchen/Desktop/Code/AlloLib-AmbisonicsToBinaural/Spatial_Audio_Framework/test/src/test__utilities_module.c",
+  "output": "Spatial_Audio_Framework/test/CMakeFiles/saf_test.dir/src/test__utilities_module.c.o"
+}
+]
