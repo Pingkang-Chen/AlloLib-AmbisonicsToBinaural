@@ -22,6 +22,7 @@
 #include "saf_hrir.h"
 #include "saf_hoa.h"
 #include "saf_utilities.h"
+#include "saf_sofa_reader.h"  // SOFA reader for custom HRTF loading
 
 // Asset loading
 #include "al_ext/assets3d/al_Asset.hpp"
@@ -43,6 +44,78 @@
 #include "headTrackingRotation.hpp"
 
 using namespace al;
+
+// ===================
+// SOFA File Data Structure (defined in ambisonicBinauralDecoder.hpp)
+// ===================
+
+// ===================
+// SOFA File Loading Function
+// ===================
+bool loadAndProcessSOFAFile(const std::string& filepath, HRIRData& hrirData) {
+    std::cout << "Loading SOFA file: " << filepath << std::endl;
+    
+    #ifdef SAF_ENABLE_SOFA_READER_MODULE
+    
+    SAF_SOFA_ERROR_CODES error;
+    saf_sofa_container sofa;
+    
+    char* filepath_cstr = const_cast<char*>(filepath.c_str());
+    error = saf_sofa_open(&sofa, filepath_cstr, SAF_SOFA_READER_OPTION_DEFAULT);
+    
+    if (error != SAF_SOFA_OK) {
+        std::cerr << "Error: Could not open SOFA file. Error code: " << error << std::endl;
+        return false;
+    }
+    
+    if (sofa.nReceivers != 2) {
+        std::cerr << "Error: SOFA file must have 2 receivers (binaural), found: " 
+                  << sofa.nReceivers << std::endl;
+        saf_sofa_close(&sofa);
+        return false;
+    }
+    
+    std::cout << "SOFA file opened successfully:" << std::endl;
+    std::cout << "  Sources: " << sofa.nSources << std::endl;
+    std::cout << "  IR length: " << sofa.DataLengthIR << std::endl;
+    std::cout << "  Sample rate: " << sofa.DataSamplingRate << " Hz" << std::endl;
+    
+    hrirData.hrir_fs = (int)sofa.DataSamplingRate;
+    hrirData.hrir_len = sofa.DataLengthIR;
+    hrirData.N_hrir_dirs = sofa.nSources;
+    
+    size_t hrir_data_size = hrirData.N_hrir_dirs * 2 * hrirData.hrir_len * sizeof(float);
+    hrirData.hrirs = (float*)malloc(hrir_data_size);
+    memcpy(hrirData.hrirs, sofa.DataIR, hrir_data_size);
+    
+    hrirData.hrir_dirs_deg = (float*)malloc(hrirData.N_hrir_dirs * 2 * sizeof(float));
+    for (int i = 0; i < hrirData.N_hrir_dirs; i++) {
+        hrirData.hrir_dirs_deg[i * 2] = sofa.SourcePosition[i * 3];
+        hrirData.hrir_dirs_deg[i * 2 + 1] = sofa.SourcePosition[i * 3 + 1];
+    }
+    
+    for (int i = 0; i < hrirData.N_hrir_dirs; i++) {
+        float azi = hrirData.hrir_dirs_deg[i * 2];
+        if (azi > 180.0f) {
+            hrirData.hrir_dirs_deg[i * 2] = azi - 360.0f;
+        }
+    }
+    
+    std::cout << "Estimating ITDs..." << std::endl;
+    hrirData.itds_s = (float*)malloc(hrirData.N_hrir_dirs * sizeof(float));
+    estimateITDs(hrirData.hrirs, hrirData.N_hrir_dirs, 
+                 hrirData.hrir_len, hrirData.hrir_fs, hrirData.itds_s);
+    
+    saf_sofa_close(&sofa);
+    
+    std::cout << "SOFA file loaded successfully!" << std::endl;
+    return true;
+    
+    #else
+    std::cerr << "Error: SAF SOFA reader module not enabled!" << std::endl;
+    return false;
+    #endif
+}
 
 // ===================
 // Simplified Parameter Smoother
@@ -349,6 +422,7 @@ public:
         std::cout << "Added " << sourceIds.size() << " audio sources" << std::endl;
         return sourceIds;
     }
+
     
     void removeSource(int sourceId) {
         sources.erase(
@@ -387,6 +461,37 @@ public:
         }
         std::cout << "Stopped playback" << std::endl;
     }
+
+    // In MultiSourceManager class, add:
+int getLongestDuration() const {
+    int maxDuration = 0;
+    for (const auto& source : sources) {
+        int duration = source->audioBuffer.getNumSamples();
+        if (duration > maxDuration) {
+            maxDuration = duration;
+        }
+    }
+    return maxDuration;
+}
+
+int getCurrentPlaybackPosition() const {
+    // Return the position of the first source (or you could track a global position)
+    if (!sources.empty() && sources[0]->audioBuffer.getNumSamples() > 0) {
+        return sources[0]->currentSamplePosition;
+    }
+    return 0;
+}
+
+void seekToPosition(int samplePosition) {
+    for (auto& source : sources) {
+        if (samplePosition < source->audioBuffer.getNumSamples()) {
+            source->currentSamplePosition = samplePosition;
+            source->isActive = true;
+        } else {
+            source->isActive = false;
+        }
+    }
+}
     
     void setSourcePosition(int sourceId, float azimuth, float elevation) {
         for (auto& source : sources) {
@@ -563,6 +668,12 @@ struct MyApp : public App {
     std::unique_ptr<juce::dsp::Convolution> headphoneEQ_R;
     int currentHeadphoneEQIndex = 0;
     
+    // SOFA file loading
+    HRIRData customHRIRData;
+    std::string sofaFilePath = "";
+    bool sofaFileLoaded = false;
+    bool useDefaultHRTF = true;
+    
     double lastParameterUpdateTime = 0.0;
     const double parameterUpdateInterval = 0.005;
     
@@ -718,6 +829,39 @@ void openFileDialogAndLoadAudio() {
         std::cout << "User cancelled file selection" << std::endl;
     } else {
         std::cerr << "Error opening file dialog: " << NFD_GetError() << std::endl;
+    }
+}
+
+// SOFA file loading
+void openFileDialogAndLoadSOFA() {
+    nfdchar_t *outPath = nullptr;
+    nfdfilteritem_t filterItem[1] = { {"SOFA Files", "sofa"} };
+    nfdresult_t result = NFD_OpenDialog(&outPath, filterItem, 1, nullptr);
+    
+    if (result == NFD_OKAY) {
+        sofaFilePath = std::string(outPath);
+        std::cout << "Selected SOFA file: " << sofaFilePath << std::endl;
+        
+        if (loadAndProcessSOFAFile(sofaFilePath, customHRIRData)) {
+            sofaFileLoaded = true;
+            useDefaultHRTF = false;  // Uncheck the "Use Default HRTF set" box
+            std::cout << "SOFA file loaded successfully!" << std::endl;
+            
+            // Apply custom HRIRs to decoder
+            if (ambiDecoder) {
+                ambiDecoder->loadCustomHRIRs(customHRIRData);
+            }
+        } else {
+            std::cout << "Failed to load SOFA file" << std::endl;
+            sofaFileLoaded = false;
+            sofaFilePath = "";
+        }
+        
+        NFD_FreePath(outPath);
+    } else if (result == NFD_CANCEL) {
+        std::cout << "User cancelled SOFA file selection" << std::endl;
+    } else {
+        std::cout << "Error: " << NFD_GetError() << std::endl;
     }
 }
     
@@ -1186,6 +1330,43 @@ void openFileDialogAndLoadAudio() {
             }
         }
         ImGui::EndGroup();
+
+// Progress Bar Section
+if (sourceManager->getSourceCount() > 0) {
+    int longestDuration = sourceManager->getLongestDuration();
+    
+    if (longestDuration > 0) {
+        int currentPos = sourceManager->getCurrentPlaybackPosition();
+        float currentPosFloat = static_cast<float>(currentPos);
+        
+        // Convert samples to time
+        float sampleRate = audioIO().framesPerSecond();
+        float totalSeconds = longestDuration / sampleRate;
+        float currentSeconds = currentPos / sampleRate;
+        
+        // Format time as MM:SS
+        int totalMinutes = static_cast<int>(totalSeconds) / 60;
+        int totalSecondsRemainder = static_cast<int>(totalSeconds) % 60;
+        int currentMinutes = static_cast<int>(currentSeconds) / 60;
+        int currentSecondsRemainder = static_cast<int>(currentSeconds) % 60;
+        
+        // Display time labels
+        ImGui::Text("%02d:%02d / %02d:%02d", 
+                    currentMinutes, currentSecondsRemainder,
+                    totalMinutes, totalSecondsRemainder);
+        
+        // Progress slider (seekable)
+        ImGui::PushItemWidth(-1);  // Full width
+        if (ImGui::SliderFloat("##progress", &currentPosFloat, 0.0f, 
+                               static_cast<float>(longestDuration), "")) {
+            // User is seeking - update all sources
+            sourceManager->seekToPosition(static_cast<int>(currentPosFloat));
+        }
+        ImGui::PopItemWidth();
+    }
+}
+
+ImGui::Separator();
         
         ImGui::Separator();
         
@@ -1337,25 +1518,33 @@ void openFileDialogAndLoadAudio() {
 
         ImGui::Text("HRTF Dataset:");
 
-        static bool useDefaultHRTF = true;
         if (ImGui::Checkbox("Use Default HRTF set", &useDefaultHRTF)) {
-            std::cout << "Use default HRTF: " << (useDefaultHRTF ? "enabled" : "disabled") << std::endl;
+            if (useDefaultHRTF && sofaFileLoaded) {
+                // Switch back to default HRTFs
+                if (ambiDecoder) {
+                    ambiDecoder->useDefaultHRTFs();
+                }
+                sofaFileLoaded = false;
+                sofaFilePath = "";
+                std::cout << "Switched back to default HRTFs" << std::endl;
+            }
         }
 
         ImGui::Text("Custom SOFA File:");
-        static char sofaFilePath[512] = "";
 
         ImGui::PushItemWidth(250);
-        ImGui::InputText("##sofapath", sofaFilePath, sizeof(sofaFilePath));
+        ImGui::Text("%s", sofaFileLoaded ? sofaFilePath.c_str() : "(No file loaded)");
         ImGui::PopItemWidth();
 
         ImGui::SameLine();
         if (ImGui::Button("Browse...")) {
-            std::cout << "Open SOFA file browser" << std::endl;
+            openFileDialogAndLoadSOFA();
         }
-
-        if (ImGui::Button("Load SOFA File")) {
-            std::cout << "Loading SOFA file: " << sofaFilePath << std::endl;
+        
+        if (sofaFileLoaded) {
+            ImGui::SameLine();
+            ImGui::TextColored(ImVec4(0.3f, 1.0f, 0.3f, 1.0f), "Loaded");
+            ImGui::Text("  HRIRs: %d directions", customHRIRData.N_hrir_dirs);
         }
 
         ImGui::Separator();

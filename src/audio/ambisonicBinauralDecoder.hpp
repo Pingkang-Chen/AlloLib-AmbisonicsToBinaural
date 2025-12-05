@@ -22,6 +22,22 @@
 #include "speakerLayout.hpp"
 #include "AmbisonicReverbProcessor.hpp"
 
+// SOFA HRIR data structure (defined here since methods need access)
+struct HRIRData {
+    float* hrirs = nullptr;
+    float* hrir_dirs_deg = nullptr;
+    int N_hrir_dirs = 0;
+    int hrir_len = 0;
+    int hrir_fs = 0;
+    float* itds_s = nullptr;
+    
+    ~HRIRData() {
+        if (hrirs) free(hrirs);
+        if (hrir_dirs_deg) free(hrir_dirs_deg);
+        if (itds_s) free(itds_s);
+    }
+};
+
 /**
  * @brief Enhanced Ambisonic Binaural Decoder with VBAP-based HRTF Interpolation
  * 
@@ -112,6 +128,14 @@ public:
     int vbapTableSize;
     bool vbapInitialized;
     
+    // Custom SOFA HRIR data storage
+    float* customHRIRs;
+    float* customHRIRDirs;
+    int customN_hrir_dirs;
+    int customHRIRLen;
+    int customHRIRFs;
+    bool usingCustomHRIRs;
+    
     std::vector<std::unique_ptr<juce::dsp::Convolution>> convolutionProcessorsL;
     std::vector<std::unique_ptr<juce::dsp::Convolution>> convolutionProcessorsR;
     
@@ -136,7 +160,9 @@ public:
     AmbisonicBinauralDecoder(int orderVal = 1, int sampleRateVal = 44100, int maxBlockSizeVal = 256, 
                             SpeakerLayout::TDesignType tdesign = SpeakerLayout::T4) : 
         order(orderVal), sampleRate(sampleRateVal), maxBlockSize(maxBlockSizeVal), 
-        currentTDesign(tdesign), vbapGainTable(nullptr), vbapTableSize(0), vbapInitialized(false) {
+        currentTDesign(tdesign), vbapGainTable(nullptr), vbapTableSize(0), vbapInitialized(false),
+        customHRIRs(nullptr), customHRIRDirs(nullptr), customN_hrir_dirs(0), 
+        customHRIRLen(0), customHRIRFs(0), usingCustomHRIRs(false) {
         
         nSH = (order + 1) * (order + 1);
         
@@ -168,6 +194,12 @@ public:
         delete[] vls_gains;
         if (vbapGainTable) {
             free(vbapGainTable);
+        }
+        if (customHRIRs) {
+            free(customHRIRs);
+        }
+        if (customHRIRDirs) {
+            free(customHRIRDirs);
         }
     }
     
@@ -476,6 +508,108 @@ public:
      */
     SpeakerLayout::TDesignType getCurrentTDesign() const {
         return currentTDesign;
+    }
+    
+    /**
+     * @brief Load custom HRIRs from SOFA file data
+     * @param hrirData The HRIR data structure from SOFA file
+     */
+    void loadCustomHRIRs(const struct HRIRData& hrirData) {
+        std::cout << "Loading custom HRIRs into decoder..." << std::endl;
+        
+        // Free old custom data if exists
+        if (customHRIRs) {
+            free(customHRIRs);
+            customHRIRs = nullptr;
+        }
+        if (customHRIRDirs) {
+            free(customHRIRDirs);
+            customHRIRDirs = nullptr;
+        }
+        
+        // Store custom HRIR data
+        customN_hrir_dirs = hrirData.N_hrir_dirs;
+        customHRIRLen = hrirData.hrir_len;
+        customHRIRFs = hrirData.hrir_fs;
+        
+        // Allocate and copy HRIR data
+        size_t hrir_size = customN_hrir_dirs * 2 * customHRIRLen * sizeof(float);
+        customHRIRs = (float*)malloc(hrir_size);
+        memcpy(customHRIRs, hrirData.hrirs, hrir_size);
+        
+        // Allocate and copy direction data
+        size_t dirs_size = customN_hrir_dirs * 2 * sizeof(float);
+        customHRIRDirs = (float*)malloc(dirs_size);
+        memcpy(customHRIRDirs, hrirData.hrir_dirs_deg, dirs_size);
+        
+        // Update decoder to use custom HRIRs
+        hrirs = customHRIRs;
+        hrir_dirs_deg = customHRIRDirs;
+        N_hrir_dirs = customN_hrir_dirs;
+        hrir_len = customHRIRLen;
+        fs = customHRIRFs;
+        
+        usingCustomHRIRs = true;
+        
+        std::cout << "Custom HRIRs loaded:" << std::endl;
+        std::cout << "  Directions: " << N_hrir_dirs << std::endl;
+        std::cout << "  HRIR length: " << hrir_len << std::endl;
+        std::cout << "  Sample rate: " << fs << " Hz" << std::endl;
+        
+        // Recreate VBAP interpolation and convolution with new HRIRs
+        if (vbapGainTable) {
+            free(vbapGainTable);
+            vbapGainTable = nullptr;
+        }
+        
+        setupVBAPInterpolation();
+        setupJUCEConvolution();
+        
+        std::cout << "Custom HRIRs applied successfully!" << std::endl;
+    }
+    
+    /**
+     * @brief Switch back to using default HRTFs
+     */
+    void useDefaultHRTFs() {
+        std::cout << "Switching back to default HRTFs..." << std::endl;
+        
+        // Free custom data
+        if (customHRIRs) {
+            free(customHRIRs);
+            customHRIRs = nullptr;
+        }
+        if (customHRIRDirs) {
+            free(customHRIRDirs);
+            customHRIRDirs = nullptr;
+        }
+        
+        // Restore default HRIRs
+        hrirs = &__default_hrirs[0][0][0];
+        hrir_dirs_deg = &__default_hrir_dirs_deg[0][0];
+        N_hrir_dirs = __default_N_hrir_dirs;
+        hrir_len = __default_hrir_len;
+        fs = __default_hrir_fs;
+        
+        usingCustomHRIRs = false;
+        
+        std::cout << "Default HRTFs restored" << std::endl;
+        
+        // Recreate VBAP interpolation and convolution with default HRIRs
+        if (vbapGainTable) {
+            free(vbapGainTable);
+            vbapGainTable = nullptr;
+        }
+        
+        setupVBAPInterpolation();
+        setupJUCEConvolution();
+    }
+    
+    /**
+     * @brief Check if using custom HRIRs
+     */
+    bool isUsingCustomHRIRs() const {
+        return usingCustomHRIRs;
     }
     
     /**
