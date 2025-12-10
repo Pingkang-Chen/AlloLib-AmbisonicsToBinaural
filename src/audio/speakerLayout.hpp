@@ -25,14 +25,46 @@ public:
         T24,
         T36,
         T48,
-        ALLOSPHERE
+        ALLOSPHERE,
+        CUSTOM  // NEW: Custom layout from JSON
     };
+    
+    /**
+     * @brief Load custom speaker layout from coordinates
+     */
+    static bool loadCustomLayout(const std::vector<std::pair<float, float>>& coords, const std::string& name) {
+        if (coords.empty()) return false;
+        
+        customLayoutCoords = coords;
+        customLayoutName = name;
+        customLayoutCount = coords.size();
+        
+        std::cout << "Loaded custom layout: " << name << " with " << customLayoutCount << " speakers" << std::endl;
+        return true;
+    }
+    
+    /**
+     * @brief Get custom layout coordinates
+     */
+    static std::vector<std::pair<float, float>> getCustomLayoutCoords() {
+        return customLayoutCoords;
+    }
     
     /**
      * @brief Get speaker positions for a given layout
      */
     static std::vector<Vec3f> getTDesignPositions(TDesignType type, float radius = 1.0f) {
         std::vector<Vec3f> positions;
+        
+        // Handle custom layout
+        if (type == CUSTOM) {
+            positions.reserve(customLayoutCount);
+            for (const auto& coord : customLayoutCoords) {
+                Vec3f pos = sphericalToCartesian(coord.first, coord.second, radius);
+                positions.push_back(pos);
+            }
+            return positions;
+        }
         
         const float (*coords)[2] = nullptr;
         int count = getSpeakerCount(type);
@@ -51,6 +83,7 @@ public:
             case T36:            coords = T36_POSITIONS; break;
             case T48:            coords = T48_POSITIONS; break;
             case ALLOSPHERE:     coords = ALLOSPHERE_POSITIONS; break;
+            case CUSTOM:         break; // Already handled above
         }
         
         if (coords) {
@@ -70,6 +103,11 @@ public:
     static std::vector<std::pair<float, float>> getTDesignSphericalCoords(TDesignType type) {
         std::vector<std::pair<float, float>> coords;
         
+        // Handle custom layout
+        if (type == CUSTOM) {
+            return customLayoutCoords;
+        }
+        
         const float (*positions)[2] = nullptr;
         int count = getSpeakerCount(type);
         
@@ -87,6 +125,7 @@ public:
             case T36:            positions = T36_POSITIONS; break;
             case T48:            positions = T48_POSITIONS; break;
             case ALLOSPHERE:     positions = ALLOSPHERE_POSITIONS; break;
+            case CUSTOM:         break; // Already handled above
         }
         
         if (positions) {
@@ -103,6 +142,12 @@ public:
      * @brief Get recommended ambisonic order for a layout
      */
     static int getRecommendedOrder(TDesignType type) {
+        if (type == CUSTOM) {
+            // Estimate order based on speaker count
+            // Rule of thumb: order ≈ sqrt(numSpeakers / 2)
+            int estimatedOrder = static_cast<int>(std::sqrt(customLayoutCount / 2.0f));
+            return std::min(7, std::max(1, estimatedOrder)); // Clamp between 1 and 7
+        }
         return T_DESIGN_ORDERS[static_cast<int>(type)];
     }
     
@@ -110,6 +155,9 @@ public:
      * @brief Get the number of speakers for a layout
      */
     static int getSpeakerCount(TDesignType type) {
+        if (type == CUSTOM) {
+            return customLayoutCount;
+        }
         return T_DESIGN_COUNTS[static_cast<int>(type)];
     }
     
@@ -117,6 +165,9 @@ public:
      * @brief Get human-readable name for a layout
      */
     static std::string getTDesignName(TDesignType type) {
+        if (type == CUSTOM) {
+            return customLayoutName.empty() ? "Custom Layout" : customLayoutName;
+        }
         return std::string(T_DESIGN_NAMES[static_cast<int>(type)]);
     }
     
@@ -125,24 +176,29 @@ public:
      */
     static std::vector<std::string> getAllTDesignNames() {
         std::vector<std::string> names;
-        for (int i = 0; i < 13; i++) {
+        for (int i = 0; i < 14; i++) {  // Changed from 13 to 14 to include CUSTOM
             names.emplace_back(T_DESIGN_NAMES[i]);
         }
         return names;
     }
     
 private:
-// Helper function for coordinate conversion
-static Vec3f sphericalToCartesian(float azimuthDeg, float elevationDeg, float radius) {
-    float azimuth_rad = azimuthDeg * M_PI / 180.0f;
-    float elevation_rad = elevationDeg * M_PI / 180.0f;
+    // Static storage for custom layout
+    static std::vector<std::pair<float, float>> customLayoutCoords;
+    static std::string customLayoutName;
+    static int customLayoutCount;
     
-    float x = radius * cos(elevation_rad) * sin(azimuth_rad);
-    float y = radius * sin(elevation_rad);
-    float z = radius * cos(elevation_rad) * (-cos(azimuth_rad));  // Note the negative sign
-    
-    return Vec3f(x, y, z);
-}
+    // Helper function for coordinate conversion
+    static Vec3f sphericalToCartesian(float azimuthDeg, float elevationDeg, float radius) {
+        float azimuth_rad = azimuthDeg * M_PI / 180.0f;
+        float elevation_rad = elevationDeg * M_PI / 180.0f;
+        
+        float x = radius * cos(elevation_rad) * sin(azimuth_rad);
+        float y = radius * sin(elevation_rad);
+        float z = radius * cos(elevation_rad) * (-cos(azimuth_rad));  // Note the negative sign
+        
+        return Vec3f(x, y, z);
+    }
     
     // Static arrays containing the actual speaker positions [azimuth, elevation]
     
@@ -250,11 +306,16 @@ static Vec3f sphericalToCartesian(float azimuthDeg, float elevationDeg, float ra
         {-165.202711f, -32.500000f}, {-134.911985f, -32.500000f}, {-102.339087f, -32.500000f}
     };
     
-    static constexpr int T_DESIGN_COUNTS[] = {1, 2, 4, 5, 7, 9, 11, 4, 12, 24, 36, 48, 54};
-    static constexpr int T_DESIGN_ORDERS[] = {0, 1, 1, 2, 2, 3, 3, 1, 3, 5, 6, 7, 7};
+    static constexpr int T_DESIGN_COUNTS[] = {1, 2, 4, 5, 7, 9, 11, 4, 12, 24, 36, 48, 54, 0};  // Added 0 for CUSTOM
+    static constexpr int T_DESIGN_ORDERS[] = {0, 1, 1, 2, 2, 3, 3, 1, 3, 5, 6, 7, 7, 0};  // Added 0 for CUSTOM
     static constexpr const char* T_DESIGN_NAMES[] = {
         "Mono", "Stereo", "4.0", "5.1", "7.1", "5.1.4", "7.1.4",
         "T-design (4)", "T-design (12)", "T-design (24)", "T-design (36)", "T-design (48)",
-        "Allosphere (54)"
+        "Allosphere (54)", "Custom Layout"  // Added Custom Layout
     };
 };
+
+// Initialize static members (ADD THIS OUTSIDE THE CLASS)
+std::vector<std::pair<float, float>> SpeakerLayout::customLayoutCoords;
+std::string SpeakerLayout::customLayoutName = "Custom Layout";
+int SpeakerLayout::customLayoutCount = 0;

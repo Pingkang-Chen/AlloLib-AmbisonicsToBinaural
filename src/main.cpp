@@ -616,6 +616,67 @@ public:
     }
 };
 
+// JSON Speaker Layout Loading Function
+bool loadSpeakerLayoutFromJSON(const std::string& filepath, std::vector<std::pair<float, float>>& coords, std::string& layoutName) {
+    std::cout << "Loading speaker layout from JSON: " << filepath << std::endl;
+    
+    juce::File jsonFile(filepath);
+    if (!jsonFile.exists()) {
+        std::cerr << "JSON file does not exist: " << filepath << std::endl;
+        return false;
+    }
+    
+    juce::String jsonText = jsonFile.loadFileAsString();
+    juce::var parsedJson = juce::JSON::parse(jsonText);
+    
+    if (!parsedJson.isObject()) {
+        std::cerr << "Invalid JSON format" << std::endl;
+        return false;
+    }
+    
+    // Get layout name
+    if (parsedJson.hasProperty("Name")) {
+        layoutName = parsedJson["Name"].toString().toStdString();
+    } else {
+        layoutName = "Custom Layout";
+    }
+    
+    // Parse GenericLayout -> Elements
+    if (!parsedJson.hasProperty("GenericLayout")) {
+        std::cerr << "JSON missing 'GenericLayout' field" << std::endl;
+        return false;
+    }
+    
+    juce::var genericLayout = parsedJson["GenericLayout"];
+    if (!genericLayout.hasProperty("Elements")) {
+        std::cerr << "JSON missing 'Elements' field" << std::endl;
+        return false;
+    }
+    
+    juce::Array<juce::var>* elements = genericLayout["Elements"].getArray();
+    if (!elements || elements->size() == 0) {
+        std::cerr << "No speaker elements found in JSON" << std::endl;
+        return false;
+    }
+    
+    coords.clear();
+    
+    for (const auto& element : *elements) {
+        if (!element.isObject()) continue;
+        
+        float azimuth = element["Azimuth"];
+        float elevation = element["Elevation"];
+        
+        // SPARTA uses azimuth range [-180, 180], same as your app
+        coords.push_back({azimuth, elevation});
+        
+        std::cout << "  Speaker " << coords.size() << ": Az=" << azimuth << "°, El=" << elevation << "°" << std::endl;
+    }
+    
+    std::cout << "Successfully loaded " << coords.size() << " speakers from JSON" << std::endl;
+    return true;
+}
+
 // ===================
 // Main Application Class
 // ===================
@@ -673,6 +734,7 @@ struct MyApp : public App {
     std::string sofaFilePath = "";
     bool sofaFileLoaded = false;
     bool useDefaultHRTF = true;
+    bool isSeeking = false;
     
     double lastParameterUpdateTime = 0.0;
     const double parameterUpdateInterval = 0.005;
@@ -860,6 +922,39 @@ void openFileDialogAndLoadSOFA() {
         NFD_FreePath(outPath);
     } else if (result == NFD_CANCEL) {
         std::cout << "User cancelled SOFA file selection" << std::endl;
+    } else {
+        std::cout << "Error: " << NFD_GetError() << std::endl;
+    }
+}
+
+    // JSON Speaker Layout Loading Dialog
+void openFileDialogAndLoadSpeakerLayout() {
+    nfdchar_t *outPath = nullptr;
+    nfdfilteritem_t filterItem[1] = { {"JSON Files", "json"} };
+    nfdresult_t result = NFD_OpenDialog(&outPath, filterItem, 1, nullptr);
+    
+    if (result == NFD_OKAY) {
+        std::string jsonPath = std::string(outPath);
+        std::cout << "Selected speaker layout JSON: " << jsonPath << std::endl;
+        
+        std::vector<std::pair<float, float>> coords;
+        std::string layoutName;
+        
+        if (loadSpeakerLayoutFromJSON(jsonPath, coords, layoutName)) {
+            // Load into SpeakerLayout static storage
+            if (SpeakerLayout::loadCustomLayout(coords, layoutName)) {
+                // Switch to custom layout
+                updateAmbisonicOrderSafely(SpeakerLayout::CUSTOM);
+                
+                std::cout << "Custom speaker layout loaded and applied!" << std::endl;
+            }
+        } else {
+            std::cout << "Failed to load speaker layout JSON" << std::endl;
+        }
+        
+        NFD_FreePath(outPath);
+    } else if (result == NFD_CANCEL) {
+        std::cout << "User cancelled layout file selection" << std::endl;
     } else {
         std::cout << "Error: " << NFD_GetError() << std::endl;
     }
@@ -1355,35 +1450,55 @@ if (sourceManager->getSourceCount() > 0) {
                     currentMinutes, currentSecondsRemainder,
                     totalMinutes, totalSecondsRemainder);
         
-        // Progress slider (seekable)
-        ImGui::PushItemWidth(-1);  // Full width
-        if (ImGui::SliderFloat("##progress", &currentPosFloat, 0.0f, 
-                               static_cast<float>(longestDuration), "")) {
-            // User is seeking - update all sources
-            sourceManager->seekToPosition(static_cast<int>(currentPosFloat));
-        }
-        ImGui::PopItemWidth();
+       
+// Progress slider (seekable)
+ImGui::PushItemWidth(-1);  // Full width
+if (ImGui::SliderFloat("##progress", &currentPosFloat, 0.0f, 
+                       static_cast<float>(longestDuration), "")) {
+    // Check if user is actively dragging (not just clicked)
+    if (ImGui::IsItemActive()) {
+        isSeeking = true;  // User is dragging
+    } else {
+        isSeeking = false;  // User released
+    }
+    
+    // User is seeking - update all sources
+    sourceManager->seekToPosition(static_cast<int>(currentPosFloat));
+}
+
+// If slider was released but not currently being dragged
+if (!ImGui::IsItemActive() && isSeeking) {
+    isSeeking = false;
+}
+
+ImGui::PopItemWidth();
     }
 }
 
 ImGui::Separator();
         
-        ImGui::Separator();
         
-        ImGui::Text("Speaker Layout:");
-        int currentTDesignInt = static_cast<int>(currentTDesign);
-        auto allNames = SpeakerLayout::getAllTDesignNames();
-        std::vector<const char*> namesCStr;
-        for (const auto& name : allNames) {
-            namesCStr.push_back(name.c_str());
-        }
         
-        if (ImGui::Combo("##speakerlayout", &currentTDesignInt, namesCStr.data(), namesCStr.size())) {
-            SpeakerLayout::TDesignType newTDesign = static_cast<SpeakerLayout::TDesignType>(currentTDesignInt);
-            updateAmbisonicOrderSafely(newTDesign);
-        }
-        
-        ImGui::Separator();
+ImGui::Text("Speaker Layout:");
+int currentTDesignInt = static_cast<int>(currentTDesign);
+auto allNames = SpeakerLayout::getAllTDesignNames();
+std::vector<const char*> namesCStr;
+for (const auto& name : allNames) {
+    namesCStr.push_back(name.c_str());
+}
+
+if (ImGui::Combo("##speakerlayout", &currentTDesignInt, namesCStr.data(), namesCStr.size())) {
+    SpeakerLayout::TDesignType newTDesign = static_cast<SpeakerLayout::TDesignType>(currentTDesignInt);
+    updateAmbisonicOrderSafely(newTDesign);
+}
+
+// NEW: Import Layout Button
+ImGui::SameLine();
+if (ImGui::Button("Import Layout...")) {
+    openFileDialogAndLoadSpeakerLayout();
+}
+
+ImGui::Separator();
         
         ImGui::Text("Acoustic Space:");
         int currentEnvInt = static_cast<int>(reverbProcessor->getCurrentEnvironment());
@@ -1663,7 +1778,7 @@ ImGui::Separator();
         memset(rightOutputBuffer, 0, nFrames * sizeof(float));
         
         if (ambiEncoder && ambiDecoder && sourceManager && reverbProcessor) {
-            bool shouldPlay = sourceManager->isPlaying && !sourceManager->isPaused;
+            bool shouldPlay = sourceManager->isPlaying && !sourceManager->isPaused && !isSeeking;
             
             if (shouldPlay) {
                 sourceManager->processAudio(ambiEncoder, nFrames);
