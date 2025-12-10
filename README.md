@@ -2,21 +2,11 @@
 
 Currently under development:
 
-1: The speaker layout of AlloSphere (54.1) where I will need to implement distance simulation, and more immersive/surround sound speaker layouts (2.0, 4.0, 5.1, 7.1, 5.1.4, 7.1.4, etc.) (done)
+1: The option of importing your own wanted speaker layouts, via a .JSON file, so, users can upload whatever speaker layout into this app for playback.
 
-2: More acoustic environments of interest will be added.
+2: Option to import any Ambisonics impulse response signal, enabling simulation of custom listening spaces.
 
-3: The option of selection among different SOFA file for HRTF dataset, and user can import their own individualized HRTF dataset (if they have).
-
-4: The option of selecting among different provided headphones EQs (like Beyerdynamic, Sennheiser, AKG, ect.), for headphone compensation, ensuring a flat frequency response when listening over headphones. (done)
-
-5: The Ambisonics rotation with OSC connection for controlling the visual head to move accordingly with head tracking. (done)
-
-6: The option of importing your own wanted speaker layouts, via a .JSON file, so, users can upload whatever speaker layout into this app for playback.
-
-7: Option to import any Ambisonics impulse response signal, enabling simulation of custom listening spaces.
-
-8: This App for Ambisonics is currently using the ‘virtual loudspeaker method’. However, recent studies have suggested to employ an alternative formulation which encodes the HRTF in the SH domain for improved binaural signal’s quality. 
+3: This App for Ambisonics is currently using the ‘virtual loudspeaker method’. However, recent studies have suggested to employ an alternative formulation which encodes the HRTF in the SH domain for improved binaural signal’s quality. 
 
 What this App can be extended in the future with VR and HMD:
 
