@@ -1,3 +1,6 @@
+[![Demo Video: Using this plugin for digital piano playing under 6DoF binaural with headphone](https://img.youtube.com/vi/cx1Pjfy-89w/maxresdefault.jpg)](https://youtu.be/cx1Pjfy-89w?si=LoWtRU2xak0PPzYk)
+
+
 <img width="1140" height="809" alt="Screenshot 2025-12-10 at 2 37 24 AM" src="https://github.com/user-attachments/assets/a95b7d00-6f8b-4204-8f0f-0c8b6d02b30d" />
 
 What this App can be extended in the future with VR and HMD:
